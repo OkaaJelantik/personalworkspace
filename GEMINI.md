@@ -175,3 +175,19 @@ Penyimpanan lokal di peramban (*browser*) adalah teknologi kunci yang memungkink
 | **Query** | Hanya berdasarkan *key* | Kompleks, dengan indeks |
 
 Berdasarkan perbandingan di atas, **IndexedDB** adalah pilihan yang jelas dan paling tepat untuk aplikasi *Personal Workspace* ini. Kebutuhan untuk menyimpan data catatan yang kompleks dan berpotensi besar (dalam format *block-based editor*) serta keharusan untuk menjaga performa aplikasi tetap cepat dan responsif, menjadikan operasi asinkron dan kapasitas besar dari `IndexedDB` sebagai fondasi yang solid untuk arsitektur *local-first* proyek ini (OpenReplay, 2023).
+
+#### 2.3.5. Teknologi Block-Based Editor
+
+Salah satu fitur inti dari *Personal Workspace* ini adalah editor berbasis blok (*block-based editor*), yang memungkinkan pengguna menyusun catatan dari berbagai jenis konten seperti teks, judul, daftar, dan gambar secara modular. Membangun editor semacam ini dari awal adalah tugas yang sangat kompleks dan memakan waktu, karena melibatkan penanganan struktur data yang rumit, manajemen *state* editor, *rendering* antar muka, dan penanganan input pengguna secara *real-time*.
+
+Untuk mengatasi tantangan ini secara efisien, proyek ini akan memanfaatkan *library* atau *framework* editor yang sudah matang. Pendekatan ini tidak hanya mempercepat pengembangan, tetapi juga memastikan editor yang dihasilkan andal, beperforma tinggi, dan kaya akan fitur. Beberapa kandidat teknologi yang relevan untuk dipertimbangkan adalah:
+
+1.  **Editor.js:** Sebuah editor berbasis blok *open-source* yang menghasilkan data JSON yang bersih dan terstruktur. Keunggulan utamanya adalah arsitektur *pluggable*—setiap blok adalah *plugin* terpisah—sehingga sangat mudah untuk diperluas (*extensible*) dengan fungsionalitas kustom.
+
+2.  **Lexical:** Sebuah *framework* editor teks yang dikembangkan oleh Meta, dirancang untuk skalabilitas, aksesibilitas, dan performa. Karena berasal dari ekosistem yang sama dengan React, integrasinya sangat mulus. Lexical memberikan fondasi yang kuat dan fleksibel untuk membangun pengalaman mengedit yang kompleks, termasuk fungsionalitas kolaboratif.
+
+3.  **Tiptap:** Sebuah *headless editor framework* yang dibangun di atas Prosemirror. Disebut "*headless*" karena Tiptap tidak menyediakan komponen UI bawaan, sehingga memberikan kebebasan penuh kepada pengembang untuk merancang tampilan editor sesuai kebutuhan. Ini sangat cocok dengan pendekatan *utility-first* dari Tailwind CSS dan arsitektur berbasis komponen React.
+
+**Relevansi dengan Proyek:**
+
+Dengan memanfaatkan salah satu dari *framework* ini, pengembangan fitur editor yang menjadi inti aplikasi dapat difokuskan pada pengalaman pengguna dan integrasi dengan arsitektur *local-first*, alih-alih membangun kembali fungsionalitas dasar editor dari awal. Pilihan spesifik akan ditentukan berdasarkan kemudahan integrasi, kebutuhan kustomisasi, dan dukungan komunitas.
