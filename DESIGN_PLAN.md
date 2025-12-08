@@ -7,9 +7,7 @@ Before proceeding with implementation, we are focusing on outlining the design a
 ## Initial Thoughts for Design Document Sections:
 
 1.  **Main Features:**
-    *   To-do list
-    *   Note taking
-    *   Reminder
+    *   Integrated to-do list and note-taking functionality.
 
 2.  **Page Structure:**
     *   Overall layout
@@ -23,5 +21,12 @@ Before proceeding with implementation, we are focusing on outlining the design a
     *   Frontend: React (proposed)
     *   Styling: Tailwind CSS (existing)
     *   Build Tool: Vite (proposed)
+
+5.  **Feature Details:**
+    *   **To-do list:**
+        *   The to-do list will be presented in a table format.
+        *   Each row in the table will represent a to-do item.
+        *   Each to-do item will have a checkbox to mark it as complete.
+        *   Each to-do item will be a note-taking area, allowing users to add detailed notes within the to-do list.
 
 Further details and discussion will be added here.

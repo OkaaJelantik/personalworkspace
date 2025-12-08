@@ -5,7 +5,7 @@
 This is a web application project to build a "Personal Workspace". The goal is to create a single interface with several productivity tools.
 
 *   **Purpose:** To provide a central hub for personal productivity.
-*   **Key Features (Planned):** To-do list, note-taking, and reminders.
+*   **Key Features (Planned):** An integrated to-do list and note-taking feature, where each to-do item in a table also serves as a note-taking area.
 *   **Current Status:** The project is in the **design and planning phase**. All implementation should be preceded by a discussion and update to the `DESIGN_PLAN.md` file.
 *   **Technology Stack:**
     *   **Existing:** The project is set up with `tailwindcss` for CSS styling.
