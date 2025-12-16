@@ -1,49 +1,91 @@
 import React, { useState, useEffect } from 'react';
 import TodoItem from './TodoItem';
+import { getTodos, addTodo as addTodoDB, updateTodo as updateTodoDB, deleteTodo as deleteTodoDB } from '../services/db';
+import { useToast } from '../contexts/ToastContext';
 
 const TodoList = () => {
-  const [todos, setTodos] = useState(() => {
-    const savedTodos = localStorage.getItem('todos');
-    return savedTodos ? JSON.parse(savedTodos) : [];
-  });
+  const [todos, setTodos] = useState([]);
   const [newTodoTitle, setNewTodoTitle] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { showToast } = useToast();
 
   useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos));
-  }, [todos]);
+    const fetchTodos = async () => {
+      try {
+        const todosFromDB = await getTodos();
+        setTodos(todosFromDB);
+      } catch (err) {
+        setError('Failed to load todos.');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const addTodo = () => {
+    fetchTodos();
+  }, []);
+
+  const addTodo = async () => {
     if (newTodoTitle.trim() === '') return;
     const newTodo = {
       id: Date.now(),
       title: newTodoTitle,
       completed: false,
       note: '',
+      deadline: null,
+      priority: 'Medium',
     };
-    setTodos([...todos, newTodo]);
-    setNewTodoTitle('');
+    try {
+      const addedTodo = await addTodoDB(newTodo);
+      setTodos([...todos, addedTodo]);
+      setNewTodoTitle('');
+      showToast('Todo added successfully!');
+    } catch (err) {
+      setError('Failed to add todo.');
+      console.error(err);
+    }
+  };
+
+  const updateTodo = async (id, updatedFields) => {
+    const todo = todos.find(t => t.id === id);
+    if (todo) {
+      const updatedTodo = { ...todo, ...updatedFields };
+      try {
+        await updateTodoDB(updatedTodo);
+        setTodos(todos.map((t) => (t.id === id ? updatedTodo : t)));
+        showToast('Todo updated successfully!');
+      } catch (err) {
+        setError('Failed to update todo.');
+        console.error(err);
+      }
+    }
   };
 
   const toggleComplete = (id) => {
-    setTodos(todos.map((todo) =>
-      todo.id === id ? { ...todo, completed: !todo.completed } : todo
-    ));
+    const todo = todos.find(t => t.id === id);
+    if (todo) {
+      updateTodo(id, { completed: !todo.completed });
+    }
   };
 
   const updateNote = (id, newNote) => {
-    setTodos(todos.map((todo) =>
-      todo.id === id ? { ...todo, note: newNote } : todo
-    ));
+    updateTodo(id, { note: newNote });
   };
 
-  const deleteTodo = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+  const deleteTodo = async (id) => {
+    try {
+      await deleteTodoDB(id);
+      setTodos(todos.filter((todo) => todo.id !== id));
+      showToast('Todo deleted successfully!');
+    } catch (err) {
+      setError('Failed to delete todo.');
+      console.error(err);
+    }
   };
 
   const editTodoTitle = (id, newTitle) => {
-    setTodos(todos.map((todo) =>
-      todo.id === id ? { ...todo, title: newTitle } : todo
-    ));
+    updateTodo(id, { title: newTitle });
   };
 
   return (
@@ -70,12 +112,17 @@ const TodoList = () => {
         </button>
       </div>
       <div className="overflow-x-auto">
+        {loading && <p>Loading...</p>}
+        {error && <p className="text-red-500">{error}</p>}
+        {!loading && !error && (
         <table className="min-w-full bg-white border border-gray-200">
           <thead>
             <tr>
               <th className="py-2 px-4 border-b"></th>
               <th className="py-2 px-4 border-b text-left">Task</th>
               <th className="py-2 px-4 border-b text-left">Notes</th>
+              <th className="py-2 px-4 border-b text-left">Deadline</th>
+              <th className="py-2 px-4 border-b text-left">Priority</th>
               <th className="py-2 px-4 border-b">Actions</th>
             </tr>
           </thead>
@@ -88,10 +135,12 @@ const TodoList = () => {
                 updateNote={updateNote}
                 deleteTodo={deleteTodo}
                 editTodoTitle={editTodoTitle}
+                updateTodo={updateTodo}
               />
             ))}
           </tbody>
         </table>
+        )}
       </div>
     </div>
   );

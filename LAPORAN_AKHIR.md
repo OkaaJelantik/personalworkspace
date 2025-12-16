@@ -1,57 +1,22 @@
-# Gemini Context: Personal Workspace Web App
+# LAPORAN AKHIR
+# STRUKTUR LAPORAN TOOLS TI
 
-## Project Overview
+## COVER
+<!-- Tempat untuk cover laporan -->
 
-This is a web application project to build a "Personal Workspace". The goal is to create a single interface with several productivity tools.
+## DAFTAR ISI
+<!-- Tempat untuk daftar isi -->
 
-*   **Purpose:** To provide a central hub for personal productivity.
-*   **Key Features (Planned):** An integrated to-do list and note-taking feature, where each to-do item in a table also serves as a note-taking area. The to-do items now include a **deadline** (date and time) and **priority** level. A **real-time clock** is also integrated into the application, displaying date, hour, and minute in 24-hour format.
-*   **Current Status:** The project is in the **development phase**. All implementation should be preceded by a discussion and update to the `DESIGN_PLAN.md` file.
-*   **Technology Stack:**
-    *   **Existing:** The project is set up with `tailwindcss` for CSS styling.
-    *   **Proposed:** The `DESIGN_PLAN.md` proposes using **React** as the frontend library and **Vite** as the build tool. This has been agreed upon and is now implemented.
+## DAFTAR GAMBAR
+<!-- Tempat untuk daftar gambar -->
 
-## Building and Running
+## DAFTAR TABEL
+<!-- Tempat untuk daftar tabel -->
 
-The project setup is now complete. You can use the following commands:
+## BAB I PENDAHULUAN
 
-### Tailwind CSS Compilation
-
-To compile the `src/input.css` file into `src/output.css`, you can run the Tailwind CLI. This command can be added to the `scripts` section of `package.json`.
-
-```bash
-npx tailwindcss -i ./src/input.css -o ./src/output.css --watch
-```
-
-### Running the Application
-
-To start the development server, run:
-
-```bash
-npm run dev
-```
-
-To build the application for production, run:
-
-```bash
-npm run build
-```
-
-## Development Conventions
-
-*   **Planning First:** All new features or major changes should be outlined in `DESIGN_PLAN.md` before starting implementation.
-*   **Styling:** All styling should be done using Tailwind CSS utility classes. The base stylesheet is located at `src/input.css`.
-*   **Source Code:** All React components and application logic will reside in the `src/` directory. The main HTML entry point is `public/index.html`.
-
----
-
-## Dasar Pemikiran dan Tujuan Proyek
-
-Bagian ini mendefinisikan alasan ("mengapa") dan tujuan dari proyek ini, sebagaimana telah didiskusikan.
-
-### Latar Belakang
-
-Di era digital saat ini, kebutuhan untuk mengelola informasi dan gagasan secara efektif adalah sebuah keharusan, terutama bagi mahasiswa yang menghadapi arus data tanpa henti. *Personal Knowledge Management* (PKM) yang terorganisasi menjadi kunci untuk mengubah informasi menjadi pengetahuan yang bermakna.
+### 1.1 Latar Belakang
+Di era digital saat ini, kebutuhan untuk mengelola informasi dan gagasan secara efektif adalah sebuah keharusan, terutama bagi mahasiswa yang menghadapi arus data tanpa henti. *Personal Knowledge Management* (PKM) yang terorganisasi menjadi kunci untuk mengubah informasi menjadi bermakna.
 
 Saat ini, lanskap digital dipenuhi oleh berbagai aplikasi *workspace* canggih. Namun, alih-alih mempercepat, banyak dari platform ini justru menciptakan **hambatan** baru dalam alur kerja. Fitur yang melimpah (*bloatware*), antarmuka yang padat, dan keharusan untuk terus-menerus mengatur *tool* itu sendiri sering kali mengalihkan fokus dari tugas utama: berpikir, menulis, dan mengorganisasi gagasan. Pengguna akhirnya menghabiskan lebih banyak waktu untuk mengelola alat bantu ketimbang menyelesaikan pekerjaan, sehingga produktivitas yang dijanjikan pun terkikis oleh kompleksitas yang tidak perlu.
 
@@ -61,20 +26,22 @@ Sebagai **implementasi dari mata kuliah TOOL TI D** dan respons terhadap kedua t
 
 Tujuannya adalah untuk mengembalikan esensi dari sebuah *workspace*: sebuah ruang digital yang jernih, cepat, dan sepenuhnya milik pengguna, di mana fokus utama adalah pada **pekerjaan itu sendiri, bukan pada alatnya.**
 
-### Rumusan Masalah
-
+### 1.2 Rumusan Masalah
 Berdasarkan latar belakang, permasalahan yang akan dijawab oleh proyek ini adalah sebagai berikut:
 
 1.	Bagaimana merancang sebuah workspace dengan interface minimalis yang mampu mengurangi distraksi serta hadir out-of-the-box, sehingga meningkatkan produktivitas pengguna?
 2.	Bagaimana membangun arsitektur aplikasi berbasis web yang sepenuhnya local-first untuk menjamin kepemilikan penuh data pengguna?
 3.	Bagaimana mengimplementasikan fitur block-based editor yang responsif dan efisien pada platform client-side agar dapat berfungsi secara optimal dalam mode offline?
 
----
+### 1.3 Tujuan
+Tujuan dari proyek ini adalah untuk merancang dan membangun aplikasi *Personal Workspace* yang memenuhi kebutuhan akan alat produktivitas terpusat dengan antarmuka minimalis, beroperasi secara *local-first* untuk menjaga privasi dan kepemilikan data pengguna, serta menyediakan editor berbasis blok yang responsif dan efisien untuk pengalaman penggunaan optimal secara *offline*.
 
-## BAB II: Landasan Teori
+### 1.4 Manfaat
+Manfaat dari aplikasi ini diharapkan dapat meningkatkan produktivitas pengguna dengan menyediakan *workspace* yang bebas distraksi, menjamin keamanan dan kepemilikan data pribadi, serta memberikan fleksibilitas penggunaan tanpa ketergantungan internet.
+
+## BAB II TINJAUAN PUSTAKA
 
 ### 2.1. Personal Knowledge Management (PKM)
-
 *Personal Knowledge Management* (PKM) atau Manajemen Pengetahuan Pribadi adalah sebuah kerangka kerja untuk individu mengelola proses belajar dan pengetahuannya secara sistematis. Konsep ini secara formal muncul dalam literatur akademis sekitar tahun 1999 melalui tulisan Frand dan Hixon (dalam Jones, 2010). Secara umum, PKM didefinisikan sebagai sekumpulan proses yang digunakan seseorang untuk mengumpulkan, mengklasifikasikan, menyimpan, mencari, mengambil kembali, dan membagikan pengetahuan dalam aktivitas sehari-hari (Jones, 2010).
 
 Tujuan utama dari PKM adalah untuk meningkatkan efektivitas dan kinerja individu dalam konteks pribadi, organisasi, maupun sosial (Pomerol, 2010). Ini berbeda dari Manajemen Pengetahuan (KM) organisasional yang berfokus pada level perusahaan; PKM menempatkan individu sebagai pusat dari proses manajemen pengetahuannya sendiri. Lebih dari sekadar Manajemen Informasi Pribadi (PIM) yang hanya berfokus pada pengelolaan informasi, PKM menekankan pada transformasi informasi tersebut menjadi pengetahuan yang bermakna dan dapat ditindaklanjuti.
@@ -91,7 +58,6 @@ Menurut Wright (2007), proses dalam PKM dapat dilihat sebagai siklus berkelanjut
 Dalam konteks mahasiswa, penerapan PKM menjadi sangat relevan. Mahasiswa setiap hari dihadapkan pada volume informasi yang sangat besar. Dengan menerapkan siklus PKM, mahasiswa dapat membangun basis pengetahuan pribadi yang solid, yang tidak hanya membantu dalam studi dan penulisan tugas, tetapi juga mendorong pembelajaran seumur hidup (*lifelong learning*). Aplikasi *Personal Workspace* yang dikembangkan dalam proyek ini dirancang sebagai alat bantu untuk memfasilitasi siklus PKM tersebut secara efisien.
 
 ### 2.2. Arsitektur Local-First
-
 Arsitektur *Local-First* (Lokal-Utama) adalah sebuah paradigma pengembangan perangkat lunak yang memprioritaskan penyimpanan dan pemrosesan data langsung di perangkat pengguna, bukan di server *cloud*. Dalam model ini, salinan utama (primer) dari data pengguna berada di perangkat mereka sendiri, dan sinkronisasi dengan server atau perangkat lain terjadi di latar belakang ketika koneksi internet tersedia. Pendekatan ini secara fundamental berbeda dengan arsitektur *cloud-first* tradisional di mana data primer berada di server dan pengguna membutuhkan koneksi internet untuk mengakses dan memodifikasinya.
 
 Konsep arsitektur *local-first* secara komprehensif dipaparkan oleh Kleppmann, et al. (2019) dalam artikel mereka, "Local-first software: You own your data, in spite of the cloud." Mereka menguraikan tujuh prinsip utama yang mendefinisikan aplikasi *local-first*:
@@ -109,7 +75,6 @@ Penerapan arsitektur *local-first* untuk proyek *Personal Workspace* ini sangat 
 ### 2.3. Teknologi Client-Side
 
 #### 2.3.1. HTML, CSS, dan JavaScript
-
 Pengembangan aplikasi web *client-side*, termasuk *Personal Workspace* ini, dibangun di atas tiga pilar teknologi web fundamental: HTML, CSS, dan JavaScript. Ketiga teknologi ini bekerja secara sinergis untuk menciptakan pengalaman pengguna yang lengkap dan interaktif di peramban web.
 
 1.  **HTML (HyperText Markup Language):** HTML berfungsi sebagai tulang punggung setiap halaman web. Ini adalah bahasa *markup* standar yang digunakan untuk membuat struktur dan konten dari sebuah halaman web. Elemen-elemen HTML (seperti `<p>` untuk paragraf, `<h1>` untuk judul, `<div>` untuk bagian) mendefinisikan hierarki dan jenis konten yang akan ditampilkan kepada pengguna. Dalam konteks *Personal Workspace*, HTML bertanggung jawab untuk menyusun kerangka dasar aplikasi, elemen navigasi, dan area konten untuk catatan.
@@ -121,7 +86,6 @@ Pengembangan aplikasi web *client-side*, termasuk *Personal Workspace* ini, diba
 Kombinasi ketiga teknologi ini sangat penting dalam membangun aplikasi *Personal Workspace* yang responsif, visual menarik, dan fungsional sepenuhnya di sisi klien tanpa ketergantungan pada server.
 
 #### 2.3.2. React
-
 React adalah sebuah *library* JavaScript yang paling populer dan banyak digunakan untuk membangun antarmuka pengguna (UI) yang interaktif dan efisien, terutama untuk *single-page applications* (SPA). Dikembangkan oleh Facebook (sekarang Meta), React telah menjadi fondasi bagi banyak aplikasi web modern berkat pendekatannya yang deklaratif dan berbasis komponen.
 
 Konsep utama React yang mendukung pengembangan UI meliputi:
@@ -140,7 +104,6 @@ Penggunaan React dalam proyek *Personal Workspace* ini sangat menguntungkan kare
 *   Memiliki ekosistem dan komunitas yang besar, menyediakan banyak sumber daya dan *library* pendukung.
 
 #### 2.3.3. Tailwind CSS
-
 Tailwind CSS adalah sebuah *framework* CSS *utility-first* yang dirancang untuk mempercepat proses pengembangan antarmuka pengguna (UI) dengan menyediakan set lengkap kelas-kelas utilitas siap pakai. Berbeda dengan *framework* CSS tradisional seperti Bootstrap yang menyediakan komponen UI pradesain (misalnya, `btn` untuk tombol, `card` untuk kartu), Tailwind CSS berfokus pada penyediaan kelas-kelas individual yang secara langsung memetakan properti CSS tunggal atau kombinasi kecil.
 
 Konsep utama di balik Tailwind CSS meliputi:
@@ -159,7 +122,6 @@ Dalam pengembangan *Personal Workspace* ini, Tailwind CSS dipilih karena:
 *   Mendukung pendekatan antarmuka minimalis dan bebas distraksi yang menjadi salah satu pilar desain aplikasi.
 
 #### 2.3.4. Penyimpanan Lokal Browser
-
 Penyimpanan lokal di peramban (*browser*) adalah teknologi kunci yang memungkinkan arsitektur *local-first*. Teknologi ini memberikan aplikasi web kemampuan untuk menyimpan data secara persisten di perangkat pengguna, sehingga data tetap tersedia bahkan setelah peramban ditutup dan dibuka kembali. Dua mekanisme utama untuk penyimpanan lokal modern adalah `LocalStorage` dan `IndexedDB`.
 
 1.  **LocalStorage**
@@ -181,7 +143,6 @@ Penyimpanan lokal di peramban (*browser*) adalah teknologi kunci yang memungkink
 Berdasarkan perbandingan di atas, **IndexedDB** adalah pilihan yang jelas dan paling tepat untuk aplikasi *Personal Workspace* ini. Kebutuhan untuk menyimpan data catatan yang kompleks dan berpotensi besar (dalam format *block-based editor*) serta keharusan untuk menjaga performa aplikasi tetap cepat dan responsif, menjadikan operasi asinkron dan kapasitas besar dari `IndexedDB` sebagai fondasi yang solid untuk arsitektur *local-first* proyek ini (OpenReplay, 2023).
 
 #### 2.3.5. Teknologi Block-Based Editor
-
 Salah satu fitur inti dari *Personal Workspace* ini adalah editor berbasis blok (*block-based editor*), yang memungkinkan pengguna menyusun catatan dari berbagai jenis konten seperti teks, judul, daftar, dan gambar secara modular. Membangun editor semacam ini dari awal adalah tugas yang sangat kompleks dan memakan waktu, karena melibatkan penanganan struktur data yang rumit, manajemen *state* editor, *rendering* antar muka, dan penanganan input pengguna secara *real-time*.
 
 Untuk mengatasi tantangan ini secara efisien, proyek ini akan memanfaatkan *library* atau *framework* editor yang sudah matang. Pendekatan ini tidak hanya mempercepat pengembangan, tetapi juga memastikan editor yang dihasilkan andal, beperforma tinggi, dan kaya akan fitur. Beberapa kandidat teknologi yang relevan untuk dipertimbangkan adalah:
@@ -195,3 +156,103 @@ Untuk mengatasi tantangan ini secara efisien, proyek ini akan memanfaatkan *libr
 **Relevansi dengan Proyek:**
 
 Dengan memanfaatkan salah satu dari *framework* ini, pengembangan fitur editor yang menjadi inti aplikasi dapat difokuskan pada pengalaman pengguna dan integrasi dengan arsitektur *local-first*, alih-alih membangun kembali fungsionalitas dasar editor dari awal. Pilihan spesifik akan ditentukan berdasarkan kemudahan integrasi, kebutuhan kustomisasi, dan dukungan komunitas.
+## BAB III PEMBAHASAN
+
+### 3.1 Gambaran umum system
+Aplikasi "Personal Workspace" ini bertujuan untuk menyediakan *central hub* bagi produktivitas pribadi dengan mengintegrasikan fitur to-do list dan note-taking. Setiap item to-do tidak hanya berfungsi sebagai pengingat tugas, tetapi juga sebagai area pencatatan, lengkap dengan deadline (tanggal dan waktu) dan tingkat prioritas (Rendah, Sedang, Tinggi). Aplikasi ini juga dilengkapi dengan tampilan jam real-time yang menunjukkan tanggal, jam, dan menit dalam format 24 jam.
+
+### 3.2 Perancangan system
+#### Teknologi yang Digunakan:
+*   **Frontend:** React (JavaScript/TypeScript)
+*   **Styling:** Tailwind CSS
+*   **Build Tool:** Vite
+
+#### Fitur Utama:
+*   **To-do list:**
+    *   Tampilan tabel untuk daftar to-do.
+    *   Setiap baris adalah item to-do dengan *checkbox* untuk menandai selesai.
+    *   Setiap item to-do berfungsi sebagai area catatan.
+    *   Deadline (tanggal dan waktu) dengan indikator warna merah jika terlewat.
+    *   Tingkat prioritas (Low, Medium, High).
+*   **Jam Real-time:** Menampilkan tanggal, jam, dan menit (format 24-jam).
+
+#### Lingkungan Pengembangan:
+Proyek ini menggunakan Vite sebagai *build tool*. Tailwind CSS digunakan untuk styling.
+
+### 3.3 Hasil dan Pembahasan
+<!-- Bagian ini akan diisi dengan screenshot aplikasi yang berjalan, deskripsi fitur-fitur yang telah diimplementasikan, serta analisis hasil pengembangan. -->
+
+## BAB IV PENUTUP
+
+### 4.1 Simpulan
+<!-- Bagian ini akan berisi simpulan dari keseluruhan proyek. -->
+
+### 4.2 Saran
+<!-- Bagian ini akan berisi saran untuk pengembangan lebih lanjut. -->
+
+## DAFTAR PUSTAKA
+# DAFTAR PUSTAKA
+
+Berikut adalah "database" referensi yang digunakan dalam laporan ini. Setiap entri berisi komponen-komponen data yang kemudian diformat ke dalam gaya APA untuk digunakan dalam laporan.
+
+---
+-   **ID:** Jones2010
+    **Tipe:** Bab dalam Buku
+    **Penulis:** Jones, W.
+    **Tahun:** 2010
+    **Judul Entri:** Personal Knowledge Management
+    **Judul Buku:** Encyclopedia of Library and Information Sciences, Third Edition
+    **Penerbit:** Taylor & Francis
+
+-   **ID:** Pomerol2010
+    **Tipe:** Bab dalam Buku
+    **Penulis:** Pomerol, J. C.
+    **Tahun:** 2010
+    **Judul Entri:** The "Personal Knowledge Management" Puzzle
+    **Judul Buku:** Encyclopedia of Library and Information Sciences, Third Edition
+    **Penerbit:** Taylor & Francis
+
+-   **ID:** Wright2007
+    **Tipe:** Artikel Jurnal
+    **Penulis:** Wright, K.
+    **Tahun:** 2007
+    **Judul Artikel:** Personal knowledge management: supporting individual knowledge worker performance
+    **Nama Jurnal:** Knowledge Management Research & Practice
+    **Volume:** 5
+    **Nomor Isu:** 3
+    **Halaman:** 156-165
+
+-   **ID:** Kleppmann2019LocalFirst
+    **Tipe:** Artikel Web/Laporan Riset
+    **Penulis:** Kleppmann, M., Wiggins, A., & van Hardenberg, P. (Ink & Switch)
+    **Tahun:** 2019
+    **Judul Artikel:** Local-first software: You own your data, in spite of the cloud
+    **Nama Situs Web:** Ink & Switch
+    **URL:** https://www.inkandswitch.com/local-first-software/
+
+-   **ID:** GeeksforGeeksLocalStorageIndexedDB
+    **Tipe:** Artikel Web
+    **Penulis/Organisasi:** GeeksforGeeks
+    **Tahun:** 2023
+    **Judul Artikel:** LocalStorage vs IndexedDB in HTML5
+    **Nama Situs Web:** GeeksforGeeks
+    **URL:** https://www.geeksforgeeks.org/localstorage-vs-indexeddb-in-html5/
+
+-   **ID:** ShiftAsiaClientSideStorage
+    **Tipe:** Artikel Web
+    **Penulis/Organisasi:** Shift Asia
+    **Tahun:** 2023
+    **Judul Artikel:** Client-Side Storage: Local Storage vs. IndexedDB vs. Web SQL
+    **Nama Situs Web:** Shift Asia
+    **URL:** https://shiftasia.com/blog/client-side-storage-local-storage-vs-indexeddb-vs-web-sql
+
+-   **ID:** OpenReplayWebStorage
+    **Tipe:** Artikel Web
+    **Penulis/Organisasi:** OpenReplay
+    **Tahun:** 2023
+    **Judul Artikel:** Web Storage: The Comprehensive Guide to Local Storage, Session Storage, and IndexedDB
+    **Nama Situs Web:** OpenReplay
+    **URL:** https://openreplay.com/blog/web-storage-the-comprehensive-guide/
+
+## Lampiran (kalau ada)
+<!-- Tempat untuk lampiran, misalnya kode program, desain database, dll. -->

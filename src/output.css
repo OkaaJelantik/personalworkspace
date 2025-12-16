@@ -41,6 +41,9 @@
   border-bottom-style: var(--tw-border-style);
   border-bottom-width: 1px;
 }
+.text-center {
+  text-align: center;
+}
 .text-left {
   text-align: left;
 }
