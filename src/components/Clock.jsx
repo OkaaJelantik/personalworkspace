@@ -28,7 +28,7 @@ const Clock = () => {
 
   return (
     <div className="text-center p-4">
-      <p className="text-lg font-semibold">{formatDate(time)}</p>
+      <p className="text-2xl font-light text-slate-500 dark:text-slate-400">{formatDate(time)}</p>
     </div>
   );
 };

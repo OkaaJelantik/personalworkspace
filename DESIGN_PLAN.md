@@ -9,27 +9,43 @@ Before proceeding with implementation, we are focusing on outlining the design a
 1.  **Main Features:**
     *   Integrated to-do list and note-taking functionality.
 
-2.  **Page Structure:**
-    *   Overall layout
-    *   Navigation
+## Page Structure & UI Architecture
 
-3.  **UI/UX Design:**
-    *   Color themes
-    *   Component appearance
+The application will adopt a modern, two-column layout inspired by editors like VS Code and Obsidian.
 
-4.  **Technology Stack:**
-    *   Frontend: React (proposed)
-    *   Styling: Tailwind CSS (existing)
-    *   Build Tool: Vite (proposed)
+1.  **Main Layout (Two Columns):**
+    *   **Left Column (Main Sidebar):** A collapsible sidebar for file and category navigation. This will contain a tree-like structure for organizing notes into categories (folders).
+    *   **Right Column (Working Area):** The main content area where all active views are displayed.
 
-5.  **Feature Details:**
-    *   **To-do list:**
-        *   The to-do list will be presented in a table format.
-        *   Each row in the table will represent a to-do item.
-        *   Each to-do item will have a checkbox to mark it as complete.
-        *   Each to-do item will be a note-taking area, allowing users to add detailed notes within the to-do list.
-        *   Each to-do item will have a deadline for its completion, including time. The deadline text will turn red if it has passed.
-        *   Each to-do item will have a priority level (Low, Medium, High).
-    *   **Real-time Clock:** A real-time clock will be displayed on the page, showing the date, hour, and minute in 24-hour format.
+2.  **Working Area Components:**
+    *   **Tab Bar:** Located at the top of the working area. It will display all open notes and views (like the To-do List) as individual tabs. Users can click on tabs to switch between them.
+    *   **Content Area:** Below the tab bar, this area renders the content of the currently active tab.
+
+3.  **Utility and Navigation:**
+    *   **Utility Bar:** A bar at the top of the application (likely within the working area's top bar) will house utility icons.
+    *   **To-do List Toggle:** One of the utility icons will function to open the "To-do List" view as a new tab in the working area.
+
+---
+
+## Feature Details
+
+### 1. Note Management (Main Sidebar)
+
+*   Users can create, rename, and delete notes.
+*   Users can create, rename, and delete categories (folders) to organize notes.
+*   A search bar will be available to filter notes and categories.
+
+### 2. Note Editing (Working Area)
+
+*   When a note is clicked from the sidebar, it opens as a new tab in the working area.
+*   The note content will be edited using the existing `MarkdownEditor` component.
+
+### 3. To-do List Module
+
+*   The existing to-do list functionality will be refactored into a self-contained "To-do List" view.
+*   This view can be opened as a tab in the working area by clicking a dedicated utility icon.
+
+### 4. Real-time Clock
+*   The clock will be repositioned to a suitable location within the new UI, likely in a status bar at the bottom or top.
 
 Further details and discussion will be added here.

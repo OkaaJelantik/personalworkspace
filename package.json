@@ -1,18 +1,23 @@
 {
   "dependencies": {
     "@tailwindcss/cli": "^4.1.17",
+    "@tiptap/markdown": "^3.13.0",
+    "@tiptap/pm": "^3.13.0",
+    "@tiptap/react": "^3.13.0",
+    "@tiptap/starter-kit": "^3.13.0",
     "react": "^19.2.1",
     "react-dom": "^19.2.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^5.1.1",
     "autoprefixer": "^10.4.22",
+    "concurrently": "^9.2.1",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.17",
     "vite": "^7.2.7"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently \"npm run tailwind:watch\" \"vite\"",
     "build": "vite build",
     "preview": "vite preview",
     "tailwind:watch": "tailwindcss -i ./src/input.css -o ./src/output.css --watch"
