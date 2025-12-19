@@ -17,7 +17,7 @@ const Clock = () => {
     const options = {
       weekday: 'long',
       year: 'numeric',
-      month: 'long',
+      month: 'short',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
@@ -27,8 +27,8 @@ const Clock = () => {
   };
 
   return (
-    <div className="text-center p-4">
-      <p className="text-2xl font-light text-slate-500 dark:text-slate-400">{formatDate(time)}</p>
+    <div className="text-center p-1 mx-0">
+      <p className="text-xl">{formatDate(time)}</p>
     </div>
   );
 };

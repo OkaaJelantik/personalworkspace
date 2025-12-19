@@ -3,6 +3,7 @@ import { ToastProvider } from './contexts/ToastContext';
 import MainSidebar from './components/layout/MainSidebar';
 import WorkingArea from './components/layout/WorkingArea';
 import Header from './components/layout/Header';
+import Toolbar from './components/layout/Toolbar'; // Import Toolbar
 
 function App() {
   const [tabs, setTabs] = useState([{ id: 'welcome', title: 'Welcome', type: 'welcome' }]);
@@ -11,6 +12,11 @@ function App() {
     { id: 1, name: 'General', notes: [{ id: 101, title: 'My First Note' }] },
     { id: 2, name: 'Work', notes: [] }
   ]);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true); // Add sidebar visibility state
+
+  const toggleSidebar = () => {
+    setIsSidebarVisible(!isSidebarVisible);
+  };
 
   const handleSelectTab = (tabId) => {
     setActiveTabId(tabId);
@@ -39,6 +45,12 @@ function App() {
   };
 
   const openTodoListTab = () => {
+    // If the todo list is the current active tab, close it.
+    if (activeTabId === 'todo-list') {
+      handleCloseTab('todo-list');
+      return;
+    }
+
     const todoTab = tabs.find(t => t.id === 'todo-list');
     if (todoTab) {
       setActiveTabId('todo-list');
@@ -48,22 +60,50 @@ function App() {
       setActiveTabId(newTab.id);
     }
   };
+
+  const openNoteInTab = (id, title, content) => {
+    const tabId = `note-${id}`;
+    const existingTab = tabs.find(t => t.id === tabId);
+
+    if (existingTab) {
+      setActiveTabId(tabId);
+    } else {
+      const newTab = {
+        id: tabId,
+        title: title,
+        type: 'note',
+        noteId: id,
+        noteContent: content,
+      };
+      setTabs([...tabs, newTab]);
+      setActiveTabId(newTab.id);
+    }
+  };
   
   const activeTab = tabs.find(t => t.id === activeTabId);
 
   return (
     <ToastProvider>
-      <div className="min-h-screen bg-slate-200 dark:bg-slate-900 text-slate-900 dark:text-slate-100 flex flex-col">
-        <Header 
-          tabs={tabs}
-          activeTabId={activeTabId}
-          onSelectTab={handleSelectTab}
-          onCloseTab={handleCloseTab}
+      <div className="flex flex-row min-h-screen bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-slate-200">
+        <Toolbar 
+          onToggleSidebar={toggleSidebar}
           onOpenTodoList={openTodoListTab}
+          isSidebarVisible={isSidebarVisible}
         />
-        <div className="flex flex-row flex-grow">
-          <MainSidebar categories={categories} />
-          <WorkingArea activeTab={activeTab} />
+        <div className="flex-1 flex flex-col">
+          <Header />
+          <div className="flex flex-row flex-grow">
+            <MainSidebar isVisible={isSidebarVisible} categories={categories} />
+            <WorkingArea 
+              tabs={tabs}
+              activeTabId={activeTabId}
+              onSelectTab={handleSelectTab}
+              onCloseTab={handleCloseTab}
+              activeTab={activeTab} 
+              openNoteInTab={openNoteInTab} // Renamed prop
+              categories={categories} 
+            />
+          </div>
         </div>
       </div>
     </ToastProvider>

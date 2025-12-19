@@ -3,7 +3,7 @@ import Tab from './Tab';
 
 const TabBar = ({ tabs, activeTabId, onSelectTab, onCloseTab }) => {
   return (
-    <div className="flex bg-slate-200 dark:bg-slate-700">
+    <div className="flex border-b border-slate-300 dark:border-slate-700">
       {tabs.map((tab) => (
         <Tab
           key={tab.id}

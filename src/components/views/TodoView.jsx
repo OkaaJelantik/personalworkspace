@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import TodoItem from '../TodoItem';
 import { getTodos, addTodo as addTodoDB, updateTodo as updateTodoDB, deleteTodo as deleteTodoDB } from '../../services/db';
 import { useToast } from '../../contexts/ToastContext';
+import NoteModal from '../NoteModal'; // Import NoteModal
+import MarkdownEditor from '../MarkdownEditor'; // Import MarkdownEditor
 
-const TodoView = () => {
+const TodoView = () => { // Removed openTodoNoteInTab prop
   const [todos, setTodos] = useState([]);
   const [newTodoTitle, setNewTodoTitle] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedTodoForNote, setSelectedTodoForNote] = useState(null); // State to manage the open note modal
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -32,7 +35,7 @@ const TodoView = () => {
       id: Date.now(),
       title: newTodoTitle,
       completed: false,
-      note: '', // This field may be deprecated or used differently now
+      note: '',
       deadline: null,
       priority: 'Medium',
     };
@@ -85,13 +88,20 @@ const TodoView = () => {
     updateTodo(id, { title: newTitle });
   };
 
-  // This function will eventually open a note in a new tab.
-  // For now, it's a placeholder.
   const openNoteForTodo = (todo) => {
-    console.log('Opening note for to-do:', todo.title);
-    // In the future, this will call a function passed from WorkingArea
-    // to open a new tab with the note editor for this to-do's note.
-    showToast(`Note for "${todo.title}" would open here.`);
+    setSelectedTodoForNote(todo); // Open the modal by setting the todo
+  };
+
+  const handleCloseNoteModal = () => {
+    setSelectedTodoForNote(null); // Close the modal
+  };
+
+  const handleNoteContentUpdate = async (newNoteContent) => {
+    if (selectedTodoForNote) {
+      await updateTodo(selectedTodoForNote.id, { note: newNoteContent });
+      // To ensure the UI immediately reflects the change without reloading all todos:
+      setSelectedTodoForNote(prev => ({ ...prev, note: newNoteContent }));
+    }
   };
 
   return (
@@ -141,13 +151,23 @@ const TodoView = () => {
                 deleteTodo={deleteTodo}
                 editTodoTitle={editTodoTitle}
                 updateTodo={updateTodo}
-                openSidebar={openNoteForTodo} // Prop name is still openSidebar for now
+                openSidebar={openNoteForTodo}
               />
             ))}
           </tbody>
         </table>
         )}
       </div>
+
+      {selectedTodoForNote && (
+        <NoteModal isOpen={true} onClose={handleCloseNoteModal}>
+          <h2 className="text-xl font-bold mb-4">Note for: {selectedTodoForNote.title}</h2>
+          <MarkdownEditor
+            content={selectedTodoForNote.note}
+            onUpdate={handleNoteContentUpdate}
+          />
+        </NoteModal>
+      )}
     </div>
   );
 };

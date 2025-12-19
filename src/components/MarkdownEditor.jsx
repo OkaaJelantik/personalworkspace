@@ -9,12 +9,12 @@ const MenuBar = ({ editor }) => {
   }
 
   return (
-    <div className="border border-gray-300 rounded-t-md p-1 flex items-center flex-wrap gap-x-2">
+    <div className="border-b border-slate-300 dark:border-slate-600 p-2 flex items-center flex-wrap gap-x-2">
       <button
         type="button"
         onClick={() => editor.chain().focus().toggleBold().run()}
         disabled={!editor.can().chain().focus().toggleBold().run()}
-        className={`px-2 py-1 rounded ${editor.isActive('bold') ? 'bg-gray-300' : 'bg-gray-100'} hover:bg-gray-200`}
+        className={`p-2 rounded ${editor.isActive('bold') ? 'bg-slate-200 dark:bg-slate-700' : 'hover:bg-slate-200 dark:hover:bg-slate-700'}`}
       >
         Bold
       </button>
@@ -22,7 +22,7 @@ const MenuBar = ({ editor }) => {
         type="button"
         onClick={() => editor.chain().focus().toggleItalic().run()}
         disabled={!editor.can().chain().focus().toggleItalic().run()}
-        className={`px-2 py-1 rounded ${editor.isActive('italic') ? 'bg-gray-300' : 'bg-gray-100'} hover:bg-gray-200`}
+        className={`p-2 rounded ${editor.isActive('italic') ? 'bg-slate-200 dark:bg-slate-700' : 'hover:bg-slate-200 dark:hover:bg-slate-700'}`}
       >
         Italic
       </button>
@@ -30,21 +30,21 @@ const MenuBar = ({ editor }) => {
         type="button"
         onClick={() => editor.chain().focus().toggleStrike().run()}
         disabled={!editor.can().chain().focus().toggleStrike().run()}
-        className={`px-2 py-1 rounded ${editor.isActive('strike') ? 'bg-gray-300' : 'bg-gray-100'} hover:bg-gray-200`}
+        className={`p-2 rounded ${editor.isActive('strike') ? 'bg-slate-200 dark:bg-slate-700' : 'hover:bg-slate-200 dark:hover:bg-slate-700'}`}
       >
         Strike
       </button>
       <button
         type="button"
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        className={`px-2 py-1 rounded ${editor.isActive('heading', { level: 1 }) ? 'bg-gray-300' : 'bg-gray-100'} hover:bg-gray-200`}
+        className={`p-2 rounded ${editor.isActive('heading', { level: 1 }) ? 'bg-slate-200 dark:bg-slate-700' : 'hover:bg-slate-200 dark:hover:bg-slate-700'}`}
       >
         H1
       </button>
       <button
         type="button"
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-        className={`px-2 py-1 rounded ${editor.isActive('heading', { level: 2 }) ? 'bg-gray-300' : 'bg-gray-100'} hover:bg-gray-200`}
+        className={`p-2 rounded ${editor.isActive('heading', { level: 2 }) ? 'bg-slate-200 dark:bg-slate-700' : 'hover:bg-slate-200 dark:hover:bg-slate-700'}`}
       >
         H2
       </button>
@@ -72,15 +72,17 @@ const MarkdownEditor = ({ content, onUpdate }) => {
     },
     editorProps: {
       attributes: {
-        class: 'prose max-w-none p-2 focus:outline-none',
+        class: 'prose dark:prose-invert max-w-none p-4 focus:outline-none flex-grow',
       },
     },
   });
 
   return (
-    <div className="border border-gray-300 rounded-md">
+    <div className="border border-slate-300 dark:border-slate-600 rounded-lg flex flex-col flex-grow">
       <MenuBar editor={editor} />
-      <EditorContent editor={editor} />
+      <div className="flex-grow overflow-y-auto p-4 text-slate-900 dark:text-slate-200">
+        <EditorContent editor={editor} />
+      </div>
     </div>
   );
 };
