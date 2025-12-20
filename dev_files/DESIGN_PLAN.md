@@ -1,51 +1,43 @@
 # Personal Workspace Design Plan
 
-## Current Phase: Design Document Creation
+## Phase: Implementation & Refinement
 
-Before proceeding with implementation, we are focusing on outlining the design and requirements for the personal workspace application.
+This document outlines the architecture and features of the Personal Workspace application as implemented.
 
-## Initial Thoughts for Design Document Sections:
+## Core Features & Architecture
 
-1.  **Main Features:**
-    *   Integrated to-do list and note-taking functionality.
+The application is a **local-first Single Page Application (SPA)** built with **React** and **Vite**, styled with **Tailwind CSS**. It provides two main functionalities: a sophisticated to-do list and a simple note-taking system.
 
-## Page Structure & UI Architecture
+### 1. Main Layout
+The UI is composed of three main parts:
+*   **Toolbar (Far Left):** A thin vertical bar with icons to toggle the main sidebar and open the To-do List view.
+*   **Main Sidebar (Left):** A collapsible sidebar dedicated to the note-taking feature.
+*   **Working Area (Right):** The primary content area that uses a tab-based system to display different views.
 
-The application will adopt a modern, two-column layout inspired by editors like VS Code and Obsidian.
+### 2. To-do List Module
+The to-do list has been implemented as an advanced, Notion-style **Kanban Board**.
+*   **View:** Opens in a dedicated "To-do List" tab.
+*   **Columns:** Three status columns: "Belum dimulai" (Upcoming), "Sedang berlangsung" (In Progress), and "Selesai" (Done).
+*   **Cards:** Each to-do item is a card that can be dragged and dropped between columns.
+*   **In-Card Editing:**
+    *   The **title and a short description** can be edited directly on the card via a *double-click*.
+    *   **Priority** can be changed by clicking the priority badge, which cycles through "Low", "Medium", and "High".
+    *   **Deadline** can be set by clicking the absolute date display on the card's footer, which opens a native date-time picker.
+*   **Note Integration:** Each to-do card has an associated long-form note page, accessible via a "File" icon, which opens in a slide-in modal window.
 
-1.  **Main Layout (Two Columns):**
-    *   **Left Column (Main Sidebar):** A collapsible sidebar for file and category navigation. This will contain a tree-like structure for organizing notes into categories (folders).
-    *   **Right Column (Working Area):** The main content area where all active views are displayed.
+### 3. Note-Taking Module
+This provides a simple, flat-list system for general notes.
+*   **Sidebar Integration:**
+    *   A "Catatan Baru" (New Note) button in the sidebar creates a new note.
+    *   A list of all notes is displayed in the sidebar. Each note item shows a "Delete" button on hover.
+*   **Tab-Based Editing:**
+    *   Clicking a note from the sidebar opens it in a **new tab** in the working area.
+    *   The note's title can be edited from the large title input at the top of the view.
+    *   The note's content is edited using a rich Markdown editor.
 
-2.  **Working Area Components:**
-    *   **Tab Bar:** Located at the top of the working area. It will display all open notes and views (like the To-do List) as individual tabs. Users can click on tabs to switch between them.
-    *   **Content Area:** Below the tab bar, this area renders the content of the currently active tab.
-
-3.  **Utility and Navigation:**
-    *   **Utility Bar:** A bar at the top of the application (likely within the working area's top bar) will house utility icons.
-    *   **To-do List Toggle:** One of the utility icons will function to open the "To-do List" view as a new tab in the working area.
-
----
-
-## Feature Details
-
-### 1. Note Management (Main Sidebar)
-
-*   Users can create, rename, and delete notes.
-*   Users can create, rename, and delete categories (folders) to organize notes.
-*   A search bar will be available to filter notes and categories.
-
-### 2. Note Editing (Working Area)
-
-*   When a note is clicked from the sidebar, it opens as a new tab in the working area.
-*   The note content will be edited using the existing `MarkdownEditor` component.
-
-### 3. To-do List Module
-
-*   The existing to-do list functionality will be refactored into a self-contained "To-do List" view.
-*   This view can be opened as a tab in the working area by clicking a dedicated utility icon.
-
-### 4. Real-time Clock
-*   The clock will be repositioned to a suitable location within the new UI, likely in a status bar at the bottom or top.
-
-Further details and discussion will be added here.
+### 4. Rich Text Editor (Tiptap)
+A shared `MarkdownEditor` component is used for both to-do notes and the main note-taking feature.
+*   **Technology:** Built on the **Tiptap** framework.
+*   **Toolbar:** Features a formatting toolbar with icon-based buttons for Bold, Italic, Strikethrough, Headings, Code Blocks, and Blockquotes.
+*   **Placeholder:** Displays "Ketikan catatan disini..." when the content is empty.
+*   **Styling:** Fully integrated with the application's dark/light mode theme.

@@ -60,3 +60,38 @@ Berikut adalah "database" referensi yang digunakan dalam laporan ini. Setiap ent
     **Judul Artikel:** Web Storage: The Comprehensive Guide to Local Storage, Session Storage, and IndexedDB
     **Nama Situs Web:** OpenReplay
     **URL:** https://openreplay.com/blog/web-storage-the-comprehensive-guide/
+
+-   **ID:** ReactJS
+    **Tipe:** Dokumentasi Perangkat Lunak
+    **Penulis/Organisasi:** Meta and individual contributors
+    **Tahun:** 2024
+    **Judul Artikel:** React Documentation
+    **URL:** https://react.dev/
+
+-   **ID:** ViteJS
+    **Tipe:** Dokumentasi Perangkat Lunak
+    **Penulis/Organisasi:** Vite team and contributors
+    **Tahun:** 2024
+    **Judul Artikel:** Vite Documentation
+    **URL:** https://vitejs.dev/
+
+-   **ID:** TailwindCSS
+    **Tipe:** Dokumentasi Perangkat Lunak
+    **Penulis/Organisasi:** Tailwind Labs
+    **Tahun:** 2024
+    **Judul Artikel:** Tailwind CSS Documentation
+    **URL:** https://tailwindcss.com/docs
+
+-   **ID:** Tiptap
+    **Tipe:** Dokumentasi Perangkat Lunak
+    **Penulis/Organisasi:** ueberdosis GmbH
+    **Tahun:** 2024
+    **Judul Artikel:** Tiptap Documentation
+    **URL:** https://tiptap.dev/
+
+-   **ID:** HelloPangeaDND
+    **Tipe:** Repositori Perangkat Lunak
+    **Penulis/Organisasi:** hello-pangea
+    **Tahun:** 2024
+    **Judul Artikel:** @hello-pangea/dnd - A maintained fork of @atlaskit/pragmatic-drag-and-drop
+    **URL:** https://github.com/hello-pangea/dnd

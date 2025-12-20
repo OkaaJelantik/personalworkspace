@@ -1,12 +1,14 @@
 import React from 'react';
 
 const Tab = ({ tab, isActive, onSelect, onClose }) => {
-  const baseClasses = 'flex items-center justify-between p-2 cursor-pointer border-r border-slate-300 dark:border-slate-700 rounded-t-md border-t border-x';
+  const baseClasses = 'flex items-center justify-between px-4 py-2 cursor-pointer border-r border-zinc-200 dark:border-zinc-700 min-w-[120px] max-w-[200px] select-none rounded-t-lg';
   
-  const activeClasses = 'bg-white dark:bg-slate-800 border-b-white dark:border-b-slate-800 -mb-px';
-  const inactiveClasses = 'bg-slate-100 dark:bg-slate-600 hover:bg-slate-200 dark:hover:bg-slate-500 border-transparent';
+  // Active: Blends with Working Area (Lightest) by removing the bottom border visually
+  const activeClasses = 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-semibold border-b-transparent';
+  
+  // Inactive: Sits on the bar background
+  const inactiveClasses = 'bg-zinc-200 dark:bg-zinc-900 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-300/60 dark:hover:bg-zinc-700 border-b-zinc-200 dark:border-b-zinc-800';
 
-  // The 'welcome' tab should not have a close button
   const canBeClosed = tab.id !== 'welcome';
 
   return (
@@ -14,11 +16,11 @@ const Tab = ({ tab, isActive, onSelect, onClose }) => {
       onClick={onSelect}
       className={`${baseClasses} ${isActive ? activeClasses : inactiveClasses}`}
     >
-      <span className="mr-2 text-sm">{tab.title}</span>
+      <span className="mr-2 text-sm truncate">{tab.title}</span>
       {canBeClosed && (
         <button
           onClick={(e) => {
-            e.stopPropagation(); // prevent onSelect from firing
+            e.stopPropagation();
             onClose();
           }}
           className="text-xs rounded-full w-4 h-4 flex items-center justify-center hover:bg-red-500 hover:text-white"

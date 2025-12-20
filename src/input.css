@@ -5,6 +5,36 @@
   min-height: 80px;
 }
 
+/* Styling for Tiptap Placeholder */
+.ProseMirror.is-empty:first-of-type::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #a1a1aa; /* zinc-400 */
+  pointer-events: none;
+  height: 0;
+}
+@media (prefers-color-scheme: dark) {
+  .ProseMirror.is-empty:first-of-type::before {
+    color: #52525b; /* zinc-600 */
+  }
+}
+
+
 .ProseMirror p {
+  @apply text-zinc-900 dark:text-zinc-100;
   margin: 0;
+}
+
+.ProseMirror-focused {
+  outline: none;
+}
+
+/* Utilitas untuk menyembunyikan scrollbar namun tetap bisa discroll */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

@@ -20,17 +20,17 @@ const ListIcon = () => (
 
 const Toolbar = ({ onToggleSidebar, onOpenTodoList, isSidebarVisible }) => {
   return (
-    <div className="h-screen bg-slate-200 dark:bg-slate-800 p-2 flex flex-col items-center space-y-4">
+    <div className="h-screen bg-zinc-100 dark:bg-zinc-900 p-2 flex flex-col items-center space-y-4 border-r border-zinc-200 dark:border-zinc-800">
       <button
         onClick={onToggleSidebar}
-        className="p-2 rounded-md hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200"
+        className="p-2 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200"
         title={isSidebarVisible ? "Hide Sidebar" : "Show Sidebar"}
       >
         <SidebarIcon isVisible={isSidebarVisible} />
       </button>
       <button
         onClick={onOpenTodoList}
-        className="p-2 rounded-md hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200"
+        className="p-2 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200"
         title="Open To-do List"
       >
         <ListIcon />

@@ -6,9 +6,7 @@ const NoteModal = ({ isOpen, onClose, children }) => {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    // This effect handles the slide-in animation
     if (isOpen) {
-      // Use a timeout to allow the component to mount before transitioning
       const timer = setTimeout(() => setShow(true), 10);
       return () => clearTimeout(timer);
     } else {
@@ -37,7 +35,7 @@ const NoteModal = ({ isOpen, onClose, children }) => {
     <div className="fixed inset-0 z-50 flex justify-end">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity duration-300"
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
         style={{ opacity: show ? 1 : 0 }}
         onClick={onClose}
       ></div>
@@ -45,16 +43,16 @@ const NoteModal = ({ isOpen, onClose, children }) => {
       {/* Modal Content - Right Floating Window */}
       <div
         ref={modalRef}
-        className={`relative w-1/2 h-full bg-slate-50 dark:bg-slate-800 shadow-2xl transform transition-transform duration-300 ease-in-out ${
+        className={`relative w-1/2 max-w-4xl h-full bg-zinc-100 dark:bg-zinc-900 shadow-2xl transform transition-transform duration-300 ease-in-out ${
           show ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <div className="p-6 flex flex-col h-full">
+        <div className="p-8 flex flex-col h-full">
           {children}
         </div>
       </div>
     </div>,
-    document.body // Portal into the body to avoid z-index issues
+    document.body
   );
 };
 
