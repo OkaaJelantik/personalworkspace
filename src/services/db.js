@@ -109,6 +109,7 @@ async function addNote(note) {
             id: Date.now(),
             title: 'Catatan Tanpa Judul',
             content: '', // Changed to empty string
+            tags: [], // Initialize empty tags array
             createdAt: Date.now(),
             updatedAt: Date.now(),
             ...note,

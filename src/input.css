@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* 
+  FORCE DARK MODE CLASS STRATEGY (Tailwind v4) 
+  Ini memberitahu Tailwind untuk menerapkan style 'dark:' 
+  HANYA jika elemen induk memiliki class '.dark'.
+*/
+@custom-variant dark (&:where(.dark, .dark *));
+
 .ProseMirror {
   outline: none;
   min-height: 80px;
@@ -13,12 +20,15 @@
   pointer-events: none;
   height: 0;
 }
-@media (prefers-color-scheme: dark) {
-  .ProseMirror.is-empty:first-of-type::before {
-    color: #52525b; /* zinc-600 */
-  }
-}
 
+/* 
+  Karena kita menimpa varian 'dark', kita harus manual menangani media query 
+  jika kita ingin placeholder berubah warna, ATAU cukup gunakan class .dark parent.
+  Di bawah ini saya ubah menjadi selector .dark agar konsisten.
+*/
+:where(.dark) .ProseMirror.is-empty:first-of-type::before {
+  color: #52525b; /* zinc-600 */
+}
 
 .ProseMirror p {
   @apply text-zinc-900 dark:text-zinc-100;

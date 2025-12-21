@@ -5,12 +5,24 @@ import WorkingArea from './components/layout/WorkingArea';
 import Header from './components/layout/Header';
 import Toolbar from './components/layout/Toolbar';
 import { getNotes, addNote, updateNote, deleteNote } from './services/db';
+import { useTheme } from './hooks/useTheme';
 
 function App() {
-  const [tabs, setTabs] = useState([{ id: 'welcome', title: 'Welcome', type: 'welcome' }]);
-  const [activeTabId, setActiveTabId] = useState('welcome');
+  // --- TAB PERSISTENCE LOGIC (Initial Load) ---
+  const [tabs, setTabs] = useState(() => {
+    const savedTabs = localStorage.getItem('workspace_tabs');
+    return savedTabs ? JSON.parse(savedTabs) : [{ id: 'welcome', title: 'Welcome', type: 'welcome' }];
+  });
+
+  const [activeTabId, setActiveTabId] = useState(() => {
+    return localStorage.getItem('workspace_active_tab') || 'welcome';
+  });
+
   const [notes, setNotes] = useState([]);
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
+  
+  // Theme Hook
+  const { theme, toggleTheme } = useTheme();
 
   // --- Initial Data Loading ---
   useEffect(() => {
@@ -20,6 +32,15 @@ function App() {
     };
     loadNotes();
   }, []);
+
+  // --- TAB PERSISTENCE LOGIC (Auto-Save) ---
+  useEffect(() => {
+    localStorage.setItem('workspace_tabs', JSON.stringify(tabs));
+  }, [tabs]);
+
+  useEffect(() => {
+    localStorage.setItem('workspace_active_tab', activeTabId);
+  }, [activeTabId]);
 
   // --- Handlers ---
   const toggleSidebar = () => {
@@ -31,10 +52,18 @@ function App() {
   };
 
   const handleCloseTab = (tabIdToClose) => {
-    if (tabIdToClose === 'welcome') return;
+    if (tabIdToClose === 'welcome' && tabs.length === 1) return;
 
     const tabIndex = tabs.findIndex(t => t.id === tabIdToClose);
     const newTabs = tabs.filter(t => t.id !== tabIdToClose);
+    
+    // Jika semua tab ditutup, buka tab welcome
+    if (newTabs.length === 0) {
+        setTabs([{ id: 'welcome', title: 'Welcome', type: 'welcome' }]);
+        setActiveTabId('welcome');
+        return;
+    }
+
     setTabs(newTabs);
 
     if (activeTabId === tabIdToClose) {
@@ -59,30 +88,23 @@ function App() {
 
     // Update state for notes and tabs
     setNotes(notes.map(n => n.id === noteId ? updatedNote : n));
-    setTabs(tabs.map(t => t.id === `note-${noteId}` ? { ...t, title: updatedNote.title, noteContent: updatedNote.content } : t));
+    setTabs(tabs.map(t => t.id === `note-${noteId}` ? { ...t, title: updatedNote.title || 'Untitled' } : t));
   };
 
   const handleDeleteNote = async (noteId) => {
-    await deleteNote(noteId);
-    setNotes(notes.filter(n => n.id !== noteId));
-    handleCloseTab(`note-${noteId}`); // Close the tab if it's open
+    if (window.confirm('Hapus catatan ini?')) {
+        await deleteNote(noteId);
+        setNotes(notes.filter(n => n.id !== noteId));
+        handleCloseTab(`note-${noteId}`);
+    }
   };
 
   // --- Tab Management ---
   const openTodoListTab = () => {
     const todoTabId = 'todo-list';
-
-    // If the todo list is the current active tab, close it.
-    if (activeTabId === todoTabId) {
-      handleCloseTab(todoTabId);
-      return;
-    }
-    
-    // If the tab exists but is not active, switch to it.
     if (tabs.find(t => t.id === todoTabId)) {
       setActiveTabId(todoTabId);
     } else {
-      // Otherwise, open a new tab.
       const newTab = { id: todoTabId, title: 'To-do List', type: 'todo' };
       setTabs([...tabs, newTab]);
       setActiveTabId(todoTabId);
@@ -96,7 +118,7 @@ function App() {
     } else {
       const newTab = {
         id: tabId,
-        title: note.title,
+        title: note.title || 'Untitled',
         type: 'note',
         noteId: note.id,
       };
@@ -109,11 +131,13 @@ function App() {
 
   return (
     <ToastProvider>
-      <div className="flex flex-row min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-200">
+      <div className="flex flex-row min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-200">
         <Toolbar 
           onToggleSidebar={toggleSidebar}
           onOpenTodoList={openTodoListTab}
           isSidebarVisible={isSidebarVisible}
+          theme={theme}
+          onToggleTheme={toggleTheme}
         />
         <div className="flex-1 flex flex-col">
           <Header />
