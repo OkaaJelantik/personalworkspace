@@ -4,13 +4,22 @@ import MarkdownEditor from '../MarkdownEditor';
 import TabBar from './TabBar';
 import TagInput from '../ui/TagInput';
 
-const WorkingArea = ({ tabs, activeTabId, onSelectTab, onCloseTab, activeTab, notes, onUpdateNote }) => {
+const WorkingArea = ({ tabs, activeTabId, onSelectTab, onCloseTab, onReorderTabs, activeTab, notes, onUpdateNote }) => {
   
+  // 1. Zero State (No Tabs) -> Show Welcome Screen
+  if (tabs.length === 0) {
+    return (
+        <main className="flex-1 flex flex-col bg-white dark:bg-zinc-900">
+            <WelcomeView tab={{ title: 'Personal Workspace' }} />
+        </main>
+    );
+  }
+
   const renderContent = () => {
     if (!activeTab) return <div className="flex items-center justify-center h-full"><p className="text-zinc-500">No active tabs.</p></div>;
 
     switch (activeTab.type) {
-      case 'welcome':
+      case 'welcome': // Keep for backward compatibility or explicit welcome tabs
         return <WelcomeView tab={activeTab} />;
       case 'todo':
         return <TodoView />;
@@ -31,6 +40,7 @@ const WorkingArea = ({ tabs, activeTabId, onSelectTab, onCloseTab, activeTab, no
         activeTabId={activeTabId}
         onSelectTab={onSelectTab}
         onCloseTab={onCloseTab}
+        onReorderTabs={onReorderTabs}
       />
       <div className="flex-grow overflow-hidden relative bg-white dark:bg-zinc-900">
         {renderContent()}
@@ -75,10 +85,12 @@ const NoteView = ({ note, onUpdateNote }) => {
 }
 
 const WelcomeView = ({ tab }) => (
-    <div className="flex flex-col items-center justify-center h-full p-6 text-center">
-        <h1 className="text-3xl font-bold text-zinc-800 dark:text-zinc-100 mb-2">{tab.title}</h1>
-        <p className="text-zinc-500 dark:text-zinc-400 max-w-md">
-            Selamat datang di Personal Workspace Anda. Pilih menu di sebelah kiri untuk memulai, atau buat catatan baru.
+    <div className="flex flex-col items-center justify-center h-full p-6 text-center select-none opacity-50">
+        <div className="w-16 h-16 bg-zinc-200 dark:bg-zinc-800 rounded-2xl flex items-center justify-center mb-4">
+            <div className="w-8 h-8 border-2 border-zinc-400 dark:border-zinc-500 rounded-lg"></div>
+        </div>
+        <p className="text-zinc-400 dark:text-zinc-600 text-sm font-medium">
+            Personal Workspace
         </p>
     </div>
 );

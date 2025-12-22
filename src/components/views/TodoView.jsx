@@ -12,10 +12,12 @@ import {
   X,
   ArrowUpNarrowWide,
   CalendarDays,
+  ListTodo, // <-- Import ListTodo
   AlertCircle // Import icon tanda seru
 } from 'lucide-react';
 import { getTodos, addTodo as addTodoDB, updateTodo as updateTodoDB, deleteTodo as deleteTodoDB } from '../../services/db';
 import { useToast } from '../../contexts/ToastContext';
+import { useConfirm } from '../../contexts/DialogContext';
 import NoteModal from '../NoteModal';
 import MarkdownEditor from '../MarkdownEditor';
 import { getCategoryColor } from '../../utils/colors';
@@ -80,6 +82,13 @@ const TaskCard = ({ task, index, onClick, onDelete }) => {
 
   const categoryColorClass = getCategoryColor(task.category);
 
+  const subtaskProgress = task.subtasks && task.subtasks.length > 0 ? (
+    <div className="flex items-center gap-1.5 text-[10px] font-medium whitespace-nowrap text-blue-600 bg-blue-100 dark:bg-blue-900/30 px-1.5 py-0.5 rounded">
+      <ListTodo size={10} />
+      <span>{`${task.subtasks.filter(s => s.completed).length}/${task.subtasks.length} Selesai`}</span>
+    </div>
+  ) : null;
+
   return (
     <Draggable draggableId={task.id.toString()} index={index}>
       {(provided, snapshot) => (
@@ -118,6 +127,7 @@ const TaskCard = ({ task, index, onClick, onDelete }) => {
                     </span>
                 )}
                 {getRelativeBadge(task.deadline, task.status)}
+                {subtaskProgress}
                 {task.status !== 'done' && task.category && (
                     <span className={cn("text-[10px] px-1.5 py-0.5 rounded border", categoryColorClass)}>
                         {task.category}
@@ -142,6 +152,18 @@ const TodoView = () => {
   const [newTodoTitle, setNewTodoTitle] = useState('');
   const [isAdding, setIsAdding] = useState(false);
   const [selectedTodo, setSelectedTodo] = useState(null);
+  const [activeTab, setActiveTab] = useState('detail');
+  const [newSubtaskInput, setNewSubtaskInput] = useState('');
+
+  const confirm = useConfirm();
+
+  const handleAddSubtask = () => {
+    if (!newSubtaskInput.trim()) return;
+    const newSubtask = { id: Date.now(), title: newSubtaskInput.trim(), completed: false };
+    const currentSubtasks = selectedTodo.subtasks || [];
+    handleUpdate(selectedTodo.id, { subtasks: [...currentSubtasks, newSubtask] });
+    setNewSubtaskInput('');
+  };
   
   // INDEPENDENT COLUMN SORTING STATE
   const [columnSorts, setColumnSorts] = useState({
@@ -244,7 +266,11 @@ const TodoView = () => {
   };
 
   const handleDeleteCategory = async (categoryToDelete) => {
-    if (window.confirm(`Hapus kategori "${categoryToDelete}" dari semua tugas?`)) {
+    if (await confirm({
+        title: 'Hapus Kategori?',
+        message: `Hapus kategori "${categoryToDelete}" dari semua tugas?`,
+        confirmText: 'Hapus Kategori'
+    })) {
         const tasksToUpdate = todos.filter(t => t.category === categoryToDelete);
         const updatedTodos = todos.map(t => t.category === categoryToDelete ? { ...t, category: '' } : t);
         setTodos(updatedTodos);
@@ -300,6 +326,11 @@ const TodoView = () => {
         case 'deadline': return <CalendarDays size={14} />;
         default: return <ArrowUpNarrowWide size={14} />;
     }
+  };
+
+  const handleOpenTodo = (todo) => {
+    setSelectedTodo(todo);
+    setActiveTab('detail');
   };
 
   if (loading) return <div className="flex h-full items-center justify-center"><Loader2 className="animate-spin text-zinc-500" /></div>;
@@ -371,7 +402,16 @@ const TodoView = () => {
                       </div>
                     )}
                     {getTasksByStatus(column.id).map((task, index) => (
-                      <TaskCard key={task.id} task={task} index={index} onClick={setSelectedTodo} onDelete={(id) => { if(window.confirm('Hapus tugas?')) { deleteTodoDB(id); setTodos(prev => prev.filter(t => t.id !== id)); }}} />
+                      <TaskCard key={task.id} task={task} index={index} onClick={handleOpenTodo} onDelete={async (id) => { 
+                        if(await confirm({
+                            title: 'Hapus Tugas?',
+                            message: 'Tindakan ini akan menghapus tugas secara permanen.',
+                            confirmText: 'Hapus Tugas'
+                        })) { 
+                            deleteTodoDB(id); 
+                            setTodos(prev => prev.filter(t => t.id !== id)); 
+                        }
+                      }} />
                     ))}
                     {provided.placeholder}
                   </div>
@@ -458,9 +498,90 @@ const TodoView = () => {
                 <textarea className="w-full bg-transparent text-sm text-zinc-600 dark:text-zinc-300 resize-none focus:outline-none border-l-2 border-transparent focus:border-zinc-300 dark:focus:border-zinc-700 pl-2 transition-colors py-1 leading-relaxed" rows={2} placeholder="Tambahkan deskripsi singkat..." value={selectedTodo.description || ''} onChange={(e) => handleUpdate(selectedTodo.id, { description: e.target.value })} />
             </div>
 
-            <hr className="border-zinc-200 dark:border-zinc-800 mb-4" />
-            <div className="flex-1 -m-4 overflow-hidden">
-              <MarkdownEditor content={selectedTodo.note} onUpdate={(content) => handleUpdate(selectedTodo.id, { note: content })} />
+            <div className="flex-1 flex flex-col min-h-0">
+              {/* Tab Navigation (Always Visible) */}
+              <div className="flex border-b border-zinc-200 dark:border-zinc-700 mb-4">
+                <button onClick={() => setActiveTab('detail')} className={cn("px-4 py-2 text-sm font-medium", activeTab === 'detail' ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-600" : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200")}>
+                  Detail
+                </button>
+                <button onClick={() => setActiveTab('subtasks')} className={cn("px-4 py-2 text-sm font-medium", activeTab === 'subtasks' ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-600" : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200")}>
+                  Sub-tugas
+                </button>
+              </div>
+              
+              {/* Tab Content */}
+              <div className="flex-1 overflow-hidden">
+                {activeTab === 'detail' && (
+                  <div className="flex-1 -m-4 overflow-hidden h-full">
+                      <MarkdownEditor content={selectedTodo.note} onUpdate={(content) => handleUpdate(selectedTodo.id, { note: content })} />
+                  </div>
+                )}
+                
+                {activeTab === 'subtasks' && (
+                  <div className="h-full flex flex-col">
+                    <div className="flex-1 overflow-y-auto space-y-2 pr-2 scrollbar-hide">
+                      {/* Existing Subtasks */}
+                      {selectedTodo.subtasks && selectedTodo.subtasks.map((st) => (
+                        <div key={st.id} className="flex items-center gap-3 group animate-in fade-in slide-in-from-left-2 duration-200">
+                          <input 
+                            type="checkbox" 
+                            checked={st.completed} 
+                            onChange={(e) => {
+                              const newSubtasks = selectedTodo.subtasks.map(s => 
+                                s.id === st.id ? { ...s, completed: e.target.checked } : s
+                              );
+                              handleUpdate(selectedTodo.id, { subtasks: newSubtasks });
+                            }}
+                            className="w-4 h-4 rounded border-zinc-300 dark:border-zinc-700 text-blue-600 focus:ring-blue-500 bg-white dark:bg-zinc-900 transition-colors"
+                          />
+                          <input 
+                            type="text" 
+                            value={st.title} 
+                            onChange={(e) => {
+                              const newSubtasks = selectedTodo.subtasks.map(s => 
+                                s.id === st.id ? { ...s, title: e.target.value } : s
+                              );
+                              handleUpdate(selectedTodo.id, { subtasks: newSubtasks });
+                            }}
+                            placeholder="Judul subtugas..."
+                            className={cn(
+                              "flex-1 bg-transparent text-sm focus:outline-none transition-all py-1",
+                              st.completed ? "text-zinc-400 line-through" : "text-zinc-700 dark:text-zinc-200"
+                            )}
+                          />
+                          <button 
+                            onClick={() => {
+                              const newSubtasks = selectedTodo.subtasks.filter(s => s.id !== st.id);
+                              handleUpdate(selectedTodo.id, { subtasks: newSubtasks });
+                            }}
+                            className="opacity-0 group-hover:opacity-100 p-1 text-zinc-400 hover:text-red-500 transition-opacity"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
+
+                      {/* Inline Add Input */}
+                      <div className="flex items-center gap-3 py-1">
+                        <div className="w-4 h-4 rounded border-2 border-dashed border-zinc-300 dark:border-zinc-700 flex-shrink-0" />
+                        <input 
+                          type="text"
+                          value={newSubtaskInput}
+                          onChange={(e) => setNewSubtaskInput(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              handleAddSubtask();
+                            }
+                          }}
+                          onBlur={handleAddSubtask}
+                          placeholder="Tambahkan subtugas baru..."
+                          className="flex-1 bg-transparent text-sm text-zinc-500 dark:text-zinc-400 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 focus:outline-none py-1"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </NoteModal>

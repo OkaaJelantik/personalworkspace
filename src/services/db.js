@@ -1,9 +1,10 @@
 // src/services/db.js
 
 const DB_NAME = 'PersonalWorkspaceDB';
-const DB_VERSION = 2; // INCREMENTED VERSION
+const DB_VERSION = 3; // INCREMENTED VERSION
 const TODO_STORE_NAME = 'todos';
-const NOTE_STORE_NAME = 'notes'; // New store for notes
+const NOTE_STORE_NAME = 'notes';
+const FOLDER_STORE_NAME = 'folders'; // New store for folders
 
 let db;
 
@@ -19,6 +20,10 @@ function openDatabase() {
       if (!db.objectStoreNames.contains(NOTE_STORE_NAME)) {
         const noteStore = db.createObjectStore(NOTE_STORE_NAME, { keyPath: 'id' });
         noteStore.createIndex('updatedAt', 'updatedAt', { unique: false });
+      }
+      // New Folders Store
+      if (!db.objectStoreNames.contains(FOLDER_STORE_NAME)) {
+        db.createObjectStore(FOLDER_STORE_NAME, { keyPath: 'id' });
       }
     };
 
@@ -87,7 +92,47 @@ async function deleteTodo(id) {
   });
 }
 
-// --- Note Functions (NEW) ---
+// --- Folder Functions (NEW) ---
+async function getFolders() {
+    if (!db) db = await openDatabase();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(FOLDER_STORE_NAME, 'readonly');
+      const store = transaction.objectStore(FOLDER_STORE_NAME);
+      const request = store.getAll();
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+}
+
+async function addFolder(folder) {
+    if (!db) db = await openDatabase();
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(FOLDER_STORE_NAME, 'readwrite');
+        const store = transaction.objectStore(FOLDER_STORE_NAME);
+        const newFolder = {
+            id: Date.now(),
+            name: 'New Folder',
+            createdAt: Date.now(),
+            ...folder,
+        };
+        const request = store.add(newFolder);
+        request.onsuccess = () => resolve(newFolder);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function deleteFolder(id) {
+    if (!db) db = await openDatabase();
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(FOLDER_STORE_NAME, 'readwrite');
+        const store = transaction.objectStore(FOLDER_STORE_NAME);
+        const request = store.delete(id);
+        request.onsuccess = () => resolve(id);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+// --- Note Functions ---
 async function getNotes() {
     if (!db) db = await openDatabase();
     return new Promise((resolve, reject) => {
@@ -108,8 +153,10 @@ async function addNote(note) {
         const newNote = {
             id: Date.now(),
             title: 'Catatan Tanpa Judul',
-            content: '', // Changed to empty string
-            tags: [], // Initialize empty tags array
+            content: '', 
+            tags: [], 
+            subtasks: [], 
+            folderId: note.folderId || null, // Add folderId support
             createdAt: Date.now(),
             updatedAt: Date.now(),
             ...note,
@@ -147,5 +194,6 @@ async function deleteNote(id) {
 export { 
     openDatabase, 
     getTodos, addTodo, updateTodo, deleteTodo,
-    getNotes, addNote, updateNote, deleteNote 
+    getNotes, addNote, updateNote, deleteNote,
+    getFolders, addFolder, deleteFolder // Export new functions
 };

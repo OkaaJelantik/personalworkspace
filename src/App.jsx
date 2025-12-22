@@ -4,21 +4,29 @@ import MainSidebar from './components/layout/MainSidebar';
 import WorkingArea from './components/layout/WorkingArea';
 import Header from './components/layout/Header';
 import Toolbar from './components/layout/Toolbar';
-import { getNotes, addNote, updateNote, deleteNote } from './services/db';
+import { getNotes, addNote, updateNote, deleteNote, getFolders, addFolder, deleteFolder } from './services/db';
 import { useTheme } from './hooks/useTheme';
+import { useConfirm } from './contexts/DialogContext';
 
 function App() {
+  const confirm = useConfirm();
   // --- TAB PERSISTENCE LOGIC (Initial Load) ---
   const [tabs, setTabs] = useState(() => {
     const savedTabs = localStorage.getItem('workspace_tabs');
-    return savedTabs ? JSON.parse(savedTabs) : [{ id: 'welcome', title: 'Welcome', type: 'welcome' }];
+    if (savedTabs) {
+        const parsed = JSON.parse(savedTabs);
+        // Filter out any legacy 'welcome' tabs
+        return parsed.filter(t => t.id !== 'welcome' && t.type !== 'welcome');
+    }
+    return []; 
   });
 
   const [activeTabId, setActiveTabId] = useState(() => {
-    return localStorage.getItem('workspace_active_tab') || 'welcome';
+    return localStorage.getItem('workspace_active_tab') || null; // Default to null
   });
 
   const [notes, setNotes] = useState([]);
+  const [folders, setFolders] = useState([]); // New Folders State
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   
   // Theme Hook
@@ -26,11 +34,12 @@ function App() {
 
   // --- Initial Data Loading ---
   useEffect(() => {
-    const loadNotes = async () => {
-      const notesFromDB = await getNotes();
+    const loadData = async () => {
+      const [notesFromDB, foldersFromDB] = await Promise.all([getNotes(), getFolders()]);
       setNotes(notesFromDB);
+      setFolders(foldersFromDB || []);
     };
-    loadNotes();
+    loadData();
   }, []);
 
   // --- TAB PERSISTENCE LOGIC (Auto-Save) ---
@@ -51,30 +60,50 @@ function App() {
     setActiveTabId(tabId);
   };
 
-  const handleCloseTab = (tabIdToClose) => {
-    if (tabIdToClose === 'welcome' && tabs.length === 1) return;
+  const handleReorderTabs = (newTabs) => {
+    setTabs(newTabs);
+  };
 
+  const handleCloseTab = (tabIdToClose) => {
     const tabIndex = tabs.findIndex(t => t.id === tabIdToClose);
     const newTabs = tabs.filter(t => t.id !== tabIdToClose);
     
-    // Jika semua tab ditutup, buka tab welcome
-    if (newTabs.length === 0) {
-        setTabs([{ id: 'welcome', title: 'Welcome', type: 'welcome' }]);
-        setActiveTabId('welcome');
-        return;
-    }
-
     setTabs(newTabs);
 
+    // Jika tab aktif yang ditutup
     if (activeTabId === tabIdToClose) {
-      const newActiveTab = newTabs[tabIndex] || newTabs[tabIndex - 1] || newTabs[0];
-      setActiveTabId(newActiveTab?.id || null);
+        if (newTabs.length === 0) {
+            setActiveTabId(null);
+        } else {
+            const newActiveTab = newTabs[tabIndex] || newTabs[tabIndex - 1] || newTabs[0];
+            setActiveTabId(newActiveTab?.id || null);
+        }
     }
   };
   
+  // --- Folder Handlers ---
+  const handleAddFolder = async (name) => {
+    const newFolder = await addFolder({ name });
+    setFolders([...folders, newFolder]);
+  };
+
+  const handleDeleteFolder = async (folderId) => {
+    if (await confirm({
+        title: 'Hapus Folder?',
+        message: 'Catatan di dalamnya akan menjadi tanpa kategori. Tindakan ini tidak bisa dibatalkan.',
+        confirmText: 'Hapus Folder',
+        variant: 'danger'
+    })) {
+        await deleteFolder(folderId);
+        setFolders(folders.filter(f => f.id !== folderId));
+        setNotes(notes.map(n => n.folderId === folderId ? { ...n, folderId: null } : n));
+        notes.filter(n => n.folderId === folderId).forEach(n => updateNote({ ...n, folderId: null }));
+    }
+  };
+
   // --- Note Handlers ---
-  const handleAddNewNote = async () => {
-    const newNote = await addNote({}); // Creates a note with defaults
+  const handleAddNewNote = async (folderId = null) => {
+    const newNote = await addNote({ folderId }); // Creates a note with folderId
     setNotes([newNote, ...notes]);
     openNoteInTab(newNote); // Open it in a new tab
   };
@@ -92,7 +121,11 @@ function App() {
   };
 
   const handleDeleteNote = async (noteId) => {
-    if (window.confirm('Hapus catatan ini?')) {
+    if (await confirm({
+        title: 'Hapus Catatan?',
+        message: 'Catatan ini akan dihapus secara permanen dari database lokal Anda.',
+        confirmText: 'Hapus Catatan'
+    })) {
         await deleteNote(noteId);
         setNotes(notes.filter(n => n.id !== noteId));
         handleCloseTab(`note-${noteId}`);
@@ -100,14 +133,34 @@ function App() {
   };
 
   // --- Tab Management ---
-  const openTodoListTab = () => {
+  const toggleTodoListTab = () => {
     const todoTabId = 'todo-list';
+    
+    // Toggle Logic: Close if currently active
+    if (activeTabId === todoTabId) {
+        handleCloseTab(todoTabId);
+        return;
+    }
+
     if (tabs.find(t => t.id === todoTabId)) {
       setActiveTabId(todoTabId);
     } else {
       const newTab = { id: todoTabId, title: 'To-do List', type: 'todo' };
       setTabs([...tabs, newTab]);
       setActiveTabId(todoTabId);
+    }
+  };
+
+  const handleCloseAllTabs = async () => {
+    if (tabs.length === 0) return;
+    if (await confirm({
+        title: 'Tutup Semua Tab?',
+        message: 'Semua tab yang terbuka akan ditutup. Catatan Anda tetap tersimpan di sidebar.',
+        confirmText: 'Tutup Semua',
+        variant: 'blue' // Using a different variant for less destructive actions
+    })) {
+        setTabs([]);
+        setActiveTabId(null);
     }
   };
 
@@ -134,7 +187,8 @@ function App() {
       <div className="flex flex-row min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-200">
         <Toolbar 
           onToggleSidebar={toggleSidebar}
-          onOpenTodoList={openTodoListTab}
+          onToggleTodoList={toggleTodoListTab}
+          onCloseAllTabs={handleCloseAllTabs}
           isSidebarVisible={isSidebarVisible}
           theme={theme}
           onToggleTheme={toggleTheme}
@@ -145,15 +199,20 @@ function App() {
             <MainSidebar 
               isVisible={isSidebarVisible} 
               notes={notes}
+              folders={folders}
               onAddNewNote={handleAddNewNote}
               onDeleteNote={handleDeleteNote}
               onSelectNote={openNoteInTab}
+              onAddFolder={handleAddFolder}
+              onDeleteFolder={handleDeleteFolder}
+              onUpdateNote={handleUpdateNote}
             />
             <WorkingArea 
               tabs={tabs}
               activeTabId={activeTabId}
               onSelectTab={handleSelectTab}
               onCloseTab={handleCloseTab}
+              onReorderTabs={handleReorderTabs}
               activeTab={activeTab}
               notes={notes}
               onUpdateNote={handleUpdateNote}

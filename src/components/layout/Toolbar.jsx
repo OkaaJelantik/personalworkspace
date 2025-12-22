@@ -1,7 +1,7 @@
 import React from 'react';
-import { PanelLeft, ListTodo, Sun, Moon } from 'lucide-react';
+import { PanelLeft, ListTodo, Sun, Moon, XSquare } from 'lucide-react';
 
-const Toolbar = ({ onToggleSidebar, onOpenTodoList, isSidebarVisible, theme, onToggleTheme }) => {
+const Toolbar = ({ onToggleSidebar, onToggleTodoList, onCloseAllTabs, isSidebarVisible, theme, onToggleTheme }) => {
   return (
     <div className="w-12 h-screen bg-zinc-50 dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800 flex flex-col items-center py-4 gap-4 z-50">
       {/* Sidebar Toggle */}
@@ -19,11 +19,20 @@ const Toolbar = ({ onToggleSidebar, onOpenTodoList, isSidebarVisible, theme, onT
 
       {/* Todo List Toggle */}
       <button
-        onClick={onOpenTodoList}
+        onClick={onToggleTodoList}
         className="p-2 rounded-md text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors duration-200"
-        title="Buka To-do List"
+        title="Buka/Tutup To-do List"
       >
         <ListTodo size={20} />
+      </button>
+
+      {/* Close All Tabs */}
+      <button
+        onClick={onCloseAllTabs}
+        className="p-2 rounded-md text-zinc-500 hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200"
+        title="Tutup Semua Tab"
+      >
+        <XSquare size={20} />
       </button>
 
       {/* Spacer to push Theme Toggle to bottom */}
