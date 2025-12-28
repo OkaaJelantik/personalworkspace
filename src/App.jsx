@@ -193,20 +193,37 @@ function App() {
           theme={theme}
           onToggleTheme={toggleTheme}
         />
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col relative h-screen overflow-hidden">
           <Header />
-          <div className="flex flex-row flex-grow overflow-hidden">
-            <MainSidebar 
-              isVisible={isSidebarVisible} 
-              notes={notes}
-              folders={folders}
-              onAddNewNote={handleAddNewNote}
-              onDeleteNote={handleDeleteNote}
-              onSelectNote={openNoteInTab}
-              onAddFolder={handleAddFolder}
-              onDeleteFolder={handleDeleteFolder}
-              onUpdateNote={handleUpdateNote}
-            />
+          <div className="flex flex-row flex-grow overflow-hidden relative">
+            {/* Mobile Sidebar Overlay */}
+            {isSidebarVisible && (
+              <div 
+                className="fixed inset-0 bg-black/50 z-20 md:hidden" 
+                onClick={() => setIsSidebarVisible(false)}
+              />
+            )}
+            
+            <div className={`
+              ${isSidebarVisible ? 'translate-x-0' : '-translate-x-full'} 
+              absolute md:relative z-30 h-full transition-transform duration-300 ease-in-out md:transform-none
+            `}>
+                <MainSidebar 
+                  isVisible={true} // Always render internal content, visibility handled by parent class
+                  notes={notes}
+                  folders={folders}
+                  onAddNewNote={handleAddNewNote}
+                  onDeleteNote={handleDeleteNote}
+                  onSelectNote={(note) => {
+                    openNoteInTab(note);
+                    if (window.innerWidth < 768) setIsSidebarVisible(false); // Close on mobile selection
+                  }}
+                  onAddFolder={handleAddFolder}
+                  onDeleteFolder={handleDeleteFolder}
+                  onUpdateNote={handleUpdateNote}
+                />
+            </div>
+
             <WorkingArea 
               tabs={tabs}
               activeTabId={activeTabId}

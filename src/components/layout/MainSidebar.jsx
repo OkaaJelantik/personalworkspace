@@ -108,12 +108,9 @@ const MainSidebar = ({ isVisible, notes, folders, onAddNewNote, onDeleteNote, on
 
   return (
     <aside 
-      className={cn(
-        "bg-zinc-50 dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800 transition-all duration-300 ease-in-out flex flex-col",
-        isVisible ? "w-64" : "w-0"
-      )}
+      className="bg-zinc-50 dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800 flex flex-col w-64 h-full"
     >
-      <div className={cn("flex flex-col h-full min-w-[16rem]", !isVisible && "hidden")}>
+      <div className="flex flex-col h-full">
         
         {/* HEADER: Title & Add Note */}
         <div className="p-4 pb-2 flex items-center justify-between">

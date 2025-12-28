@@ -54,7 +54,7 @@ export default WorkingArea;
 const NoteView = ({ note, onUpdateNote }) => {
     return (
       // A single "page" container with a clear background and padding.
-      <div className="h-full flex flex-col bg-white dark:bg-zinc-900 p-6 md:px-12 lg:px-24">
+      <div className="h-full flex flex-col bg-white dark:bg-zinc-900 p-4 md:px-12 lg:px-24">
          {/* Title Area */}
          <div className="pb-4">
             <input 
@@ -87,17 +87,17 @@ const NoteView = ({ note, onUpdateNote }) => {
 const WelcomeView = ({ tab }) => (
     <div className="flex flex-col items-center justify-center h-full p-6 text-center select-none">
         <p className="text-[#6b7280] dark:text-zinc-400 text-3xl font-medium italic z-10 -ml-12 opacity-90">
-            "Lebih baik terlihat cupu daripada menjadi cepu."
+            "Focus on what matters."
         </p>
-        <div className="w-[600px] h-[550px] -mt-12 flex items-center justify-center">
+        <div className="max-w-4xl w-full aspect-square -mt-12 flex items-center justify-center">
             <img 
                 src="/maskot.svg" 
                 alt="Mascot" 
                 className="w-full h-full object-contain opacity-90 dark:brightness-[1.8] dark:grayscale" 
             />
         </div>
-        <p className="text-zinc-400 dark:text-zinc-400 text-xl -ml-12 font-light">
-            — Veda Hanastaa, [Kenzo 2.0].
+        <p className="text-zinc-400 dark:text-zinc-600 text-lg mt-4 font-light">
+            — [Nama Pengarang]
         </p>
     </div>
 );
