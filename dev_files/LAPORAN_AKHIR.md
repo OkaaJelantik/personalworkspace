@@ -177,25 +177,25 @@ Fitur-fitur utamanya meliputi:
 *   **Editing Berbasis Tab:** Mengklik sebuah catatan akan membukanya sebagai tab baru di *working area*. Judul catatan dapat diedit di bagian atas, sementara kontennya diedit menggunakan editor di bawahnya.
 *   **Editor Teks Kaya:** Menggunakan `MarkdownEditor` berbasis Tiptap yang sama dengan fitur to-do, lengkap dengan *toolbar* untuk formating (Bold, Italic, Heading, dll.) dan *placeholder* "Ketikan catatan disini...".
 
-#### 3.3.3. Desain Antarmuka dan Pengalaman Pengguna (UI/UX)
-Seluruh aplikasi dirancang dengan skema warna monokromatik menggunakan palet warna **Zinc** dari Tailwind CSS untuk menciptakan tampilan yang profesional, minimalis, dan tidak melelahkan mata. Hirarki visual diciptakan melalui perbedaan gradasi warna antar lapisan UI:
-*   **Sidebar dan Toolbar:** Memiliki warna paling gelap (`zinc-900`), berfungsi sebagai fondasi.
-*   **Working Area Background:** Sedikit lebih terang (`zinc-800`), menjadi kanvas utama.
-*   **Kartu/Halaman Konten:** Paling terang (`zinc-900` atau `white` di mode terang), membuat konten menjadi fokus utama.
+#### 3.3.3. Sistem Organisasi dan Folder
+Untuk mendukung manajemen catatan yang lebih kompleks, aplikasi ini telah dilengkapi dengan sistem folder yang dapat diperluas (*expandable*). Pengguna dapat mengelompokkan catatan berdasarkan kategori atau subjek, serta melakukan pencarian catatan secara *real-time* berdasarkan judul maupun tag.
 
-Pendekatan ini menjawab rumusan masalah pertama dengan menyediakan antarmuka yang bebas distraksi dan intuitif.
+#### 3.3.4. Desain Antarmuka dan Pengalaman Pengguna (UI/UX)
+Seluruh aplikasi dirancang dengan skema warna monokromatik menggunakan palet warna **Zinc** dari Tailwind CSS. Aplikasi mendukung **Mode Terang dan Gelap** yang dapat diganti secara instan melalui toolbar.
+
+Responsivitas telah menjadi prioritas utama, di mana aplikasi menyesuaikan perilakunya berdasarkan perangkat:
+*   **Desktop:** Sidebar bersifat *relative* untuk alur kerja berdampingan.
+*   **Tablet & Mobile:** Sidebar berubah menjadi *overlay* dengan backdrop untuk menghemat ruang. Kanban board di modul To-do list juga secara cerdas berubah menjadi format kolom tunggal dengan sistem navigasi *tab switcher* pada layar di bawah 1024px.
 
 ## BAB IV PENUTUP
 
 ### 4.1 Simpulan
-Proyek ini berhasil merancang dan membangun aplikasi "Personal Workspace" berbasis web dengan arsitektur *local-first* yang fungsional. Aplikasi ini berhasil mengimplementasikan dua fitur produktivitas inti—sebuah Kanban board To-do list dan sistem *note-taking*—dengan antarmuka yang minimalis dan responsif. Penggunaan React untuk komponen, Tailwind CSS untuk *styling*, IndexedDB untuk penyimpanan, serta Tiptap dan `@hello-pangea/dnd` untuk interaktivitas terbukti efektif dalam menjawab rumusan masalah yang telah ditetapkan. Hasilnya adalah sebuah prototipe yang solid, yang mengedepankan kecepatan, privasi, dan pengalaman pengguna yang bebas distraksi.
+Proyek ini berhasil merancang dan membangun aplikasi "Personal Workspace" berbasis web dengan arsitektur *local-first* yang fungsional. Aplikasi ini berhasil mengimplementasikan fitur produktivitas inti—Kanban board, sistem *note-taking* dengan folder, serta antarmuka yang sangat responsif. Penggunaan React 19, Tailwind CSS 4, dan IndexedDB terbukti efektif dalam menjawab rumusan masalah. Hasil akhirnya adalah sebuah alat produktivitas yang cepat, privat, dan adaptif di berbagai perangkat.
 
 ### 4.2 Saran
-Untuk pengembangan lebih lanjut, beberapa fitur dapat ditambahkan untuk melengkapi fungsionalitas aplikasi:
-1.  **Sistem Folder/Kategori:** Menambahkan kemampuan untuk mengelompokkan catatan di sidebar ke dalam folder-folder yang dapat diperluas (*expandable*).
-2.  **Fungsi Pencarian:** Mengimplementasikan fitur pencarian global untuk mencari tugas dan catatan berdasarkan judul atau konten.
-3.  **Pengaturan Tema:** Memberikan opsi kepada pengguna untuk mengganti tema atau skema warna secara manual.
-4.  **Sinkronisasi (Opsional):** Menjelajahi kemungkinan sinkronisasi data antar-perangkat secara *end-to-end encrypted* menggunakan teknologi seperti CRDTs, tanpa mengorbankan prinsip *local-first*.
+Untuk pengembangan lebih lanjut, fitur yang dapat ditambahkan adalah:
+1.  **Ekspor/Impor Data:** Memungkinkan pengguna mencadangkan data lokal mereka ke dalam file JSON atau Markdown.
+2.  **Sinkronisasi:** Menjelajahi teknologi CRDTs untuk sinkronisasi antar perangkat tanpa mengorbankan prinsip privasi.
 
 ## DAFTAR PUSTAKA
 ... (Konten tidak berubah) ...

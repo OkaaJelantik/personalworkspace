@@ -58,7 +58,7 @@ const NoteView = ({ note, onUpdateNote }) => {
          {/* Title Area */}
          <div className="pb-4">
             <input 
-                className="text-4xl font-bold bg-transparent border-none focus:outline-none w-full text-zinc-800 dark:text-zinc-100 placeholder:text-zinc-300 dark:placeholder:text-zinc-700 py-2 leading-tight"
+                className="text-2xl md:text-4xl font-bold bg-transparent border-none focus:outline-none w-full text-zinc-800 dark:text-zinc-100 placeholder:text-zinc-300 dark:placeholder:text-zinc-700 py-2 leading-tight"
                 value={note.title}
                 onChange={(e) => onUpdateNote(note.id, { title: e.target.value })}
                 placeholder="Judul Catatan..."
@@ -86,18 +86,18 @@ const NoteView = ({ note, onUpdateNote }) => {
 
 const WelcomeView = ({ tab }) => (
     <div className="flex flex-col items-center justify-center h-full p-6 text-center select-none">
-        <p className="text-[#6b7280] dark:text-zinc-400 text-3xl font-medium italic z-10 -ml-12 opacity-90">
-            "Focus on what matters."
+        <p className="text-[#6b7280] dark:text-zinc-400 text-xl font-medium italic z-10 opacity-90 -ml-4">
+            "Lebih baik terlihat cupu daripada menjadi cepu"
         </p>
-        <div className="max-w-4xl w-full aspect-square -mt-12 flex items-center justify-center">
+        <div className="max-w-xs w-full aspect-square -mt-8 flex items-center justify-center">
             <img 
                 src="/maskot.svg" 
                 alt="Mascot" 
                 className="w-full h-full object-contain opacity-90 dark:brightness-[1.8] dark:grayscale" 
             />
         </div>
-        <p className="text-zinc-400 dark:text-zinc-600 text-lg mt-4 font-light">
-            — [Nama Pengarang]
+        <p className="text-zinc-400 dark:text-zinc-600 text-sm mt-2 font-light italic -ml-4">
+            — Veda Hanastaa, [Kenzo 2.0]
         </p>
     </div>
 );

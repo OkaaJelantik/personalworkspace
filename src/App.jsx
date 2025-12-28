@@ -27,7 +27,7 @@ function App() {
 
   const [notes, setNotes] = useState([]);
   const [folders, setFolders] = useState([]); // New Folders State
-  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(window.innerWidth >= 768);
   
   // Theme Hook
   const { theme, toggleTheme } = useTheme();
@@ -196,17 +196,17 @@ function App() {
         <div className="flex-1 flex flex-col relative h-screen overflow-hidden">
           <Header />
           <div className="flex flex-row flex-grow overflow-hidden relative">
-            {/* Mobile Sidebar Overlay */}
+            {/* Mobile/Tablet Sidebar Overlay */}
             {isSidebarVisible && (
               <div 
-                className="fixed inset-0 bg-black/50 z-20 md:hidden" 
+                className="fixed inset-0 bg-black/50 z-20 lg:hidden" 
                 onClick={() => setIsSidebarVisible(false)}
               />
             )}
             
             <div className={`
-              ${isSidebarVisible ? 'translate-x-0' : '-translate-x-full'} 
-              absolute md:relative z-30 h-full transition-transform duration-300 ease-in-out md:transform-none
+              ${isSidebarVisible ? 'w-64 translate-x-0' : 'w-0 -translate-x-full'} 
+              absolute lg:relative z-30 h-full transition-all duration-300 ease-in-out overflow-hidden
             `}>
                 <MainSidebar 
                   isVisible={true} // Always render internal content, visibility handled by parent class
@@ -216,7 +216,7 @@ function App() {
                   onDeleteNote={handleDeleteNote}
                   onSelectNote={(note) => {
                     openNoteInTab(note);
-                    if (window.innerWidth < 768) setIsSidebarVisible(false); // Close on mobile selection
+                    if (window.innerWidth < 1024) setIsSidebarVisible(false); // Close on mobile/tablet selection
                   }}
                   onAddFolder={handleAddFolder}
                   onDeleteFolder={handleDeleteFolder}

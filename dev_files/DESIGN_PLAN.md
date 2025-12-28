@@ -24,6 +24,7 @@ The to-do list has been implemented as an advanced, Notion-style **Kanban Board*
 
 ### 3. Note-Taking Module
 A robust system for general notes with a focus on organization and typography.
+*   **Folder System:** Create and manage expandable folders to group related notes. Supports drag-and-drop to move notes between folders.
 *   **Sidebar Integration:**
     *   **Search & Filter:** Find notes instantly by Title or **#Tags**.
     *   **Management:** Create new notes and delete existing ones with hover actions.
@@ -31,12 +32,15 @@ A robust system for general notes with a focus on organization and typography.
     *   Supports inline tagging (e.g., `#work`, `#database`).
     *   Visual "Shine Blue" bold oval pills for high visibility.
     *   Intuitive creation via Enter/Space and deletion via Backspace.
-*   **Tab-Based Editing:**
-    *   Notes open in new tabs.
-    *   **Optimized Typography:** Adjusted line-height and padding for large titles to ensure descenders (g, j, p, q, y) are not clipped.
-    *   **Rich Text:** Integrated Markdown editor via Tiptap.
 
-### 4. Rich Text Editor (Tiptap)
+### 4. Adaptive Design (Responsive)
+The application is fully optimized for different device types:
+*   **Mobile (< 768px):** Sidebar overlay, compact tabs, and single-column Kanban.
+*   **Tablet (< 1024px):** Enhanced single-column Kanban with `max-w-2xl` centering for optimal readability.
+*   **Desktop (> 1024px):** Full productivity layout with relative sidebar and multi-column Kanban.
+
+### 5. Rich Text Editor (Tiptap)
 A shared `MarkdownEditor` component used throughout the app.
 *   **Technology:** Built on the Tiptap framework.
 *   **Features:** Formatting toolbar, placeholders, and full dark/light mode integration.
+*   **Optimization:** Adjusted padding and base font sizes (`prose-sm` on mobile) for a comfortable writing experience.

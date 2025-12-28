@@ -12,8 +12,9 @@ import {
   X,
   ArrowUpNarrowWide,
   CalendarDays,
-  ListTodo, // <-- Import ListTodo
-  AlertCircle // Import icon tanda seru
+  ListTodo,
+  AlertCircle,
+  Maximize2 // <-- Import Maximize2
 } from 'lucide-react';
 import { getTodos, addTodo as addTodoDB, updateTodo as updateTodoDB, deleteTodo as deleteTodoDB } from '../../services/db';
 import { useToast } from '../../contexts/ToastContext';
@@ -28,10 +29,25 @@ function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
+// Helper to format date for datetime-local input
+const formatForDateTimeInput = (dateString) => {
+    if (!dateString) return '';
+    try {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return '';
+        
+        const pad = (n) => String(n).padStart(2, '0');
+        
+        return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    } catch (e) {
+        return '';
+    }
+};
+
 // --- CONSTANTS ---
 const COLUMNS = {
-  upcoming: { id: 'upcoming', title: 'Belum dimulai', color: 'bg-zinc-500' },
-  in_progress: { id: 'in_progress', title: 'Sedang berlangsung', color: 'bg-blue-600' },
+  upcoming: { id: 'upcoming', title: 'Belum mulai', color: 'bg-zinc-500' },
+  in_progress: { id: 'in_progress', title: 'Berlangsung', color: 'bg-blue-600' },
   done: { id: 'done', title: 'Selesai', color: 'bg-emerald-600' }
 };
 
@@ -45,7 +61,7 @@ const PRIORITY_STYLES = {
 };
 
 // --- CARD COMPONENT ---
-const TaskCard = ({ task, index, onClick, onDelete }) => {
+const TaskCard = ({ task, index, onClick, onDelete, isMobile }) => {
   const getRelativeBadge = (deadline, status) => {
     if (status === 'done') {
         return (
@@ -62,22 +78,29 @@ const TaskCard = ({ task, index, onClick, onDelete }) => {
     const date = new Date(deadline);
     const now = new Date();
     const diffMs = date - now;
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const diffHours = Math.floor(Math.abs(diffMs) / (1000 * 60 * 60));
+    const diffDays = Math.floor(Math.abs(diffMs) / (1000 * 60 * 60 * 24));
     
+    // OVERDUE
     if (diffMs < 0) {
-      return <div className="flex items-center gap-1.5 text-[10px] font-medium whitespace-nowrap text-red-600 bg-red-100 dark:bg-red-900/30 px-1.5 py-0.5 rounded"><Clock size={10} /><span>{`${Math.abs(diffDays)}h lalu`}</span></div>;
+      const label = diffHours < 24 ? `${diffHours}j lalu` : `${diffDays}h lalu`;
+      return <div className="flex items-center gap-1.5 text-[10px] font-medium whitespace-nowrap text-red-600 bg-red-100 dark:bg-red-900/30 px-1.5 py-0.5 rounded"><Clock size={10} /><span>{label}</span></div>;
     }
-    if (date.toDateString() === now.toDateString()) {
-      return <div className="flex items-center gap-1.5 text-[10px] font-medium whitespace-nowrap text-orange-600 bg-orange-100 dark:bg-orange-900/30 px-1.5 py-0.5 rounded"><Clock size={10} /><span>Hari ini</span></div>;
+    
+    // UPCOMING
+    if (diffHours < 24) {
+      return <div className="flex items-center gap-1.5 text-[10px] font-medium whitespace-nowrap text-orange-600 bg-orange-100 dark:bg-orange-900/30 px-1.5 py-0.5 rounded"><Clock size={10} /><span>{`${diffHours}j lagi`}</span></div>;
     }
+    
     if (diffDays <= 7) {
         return <div className="flex items-center gap-1.5 text-[10px] font-medium whitespace-nowrap text-zinc-600 dark:text-zinc-300 bg-zinc-200 dark:bg-zinc-700 px-1.5 py-0.5 rounded"><Clock size={10} /><span>{`${diffDays}h lagi`}</span></div>;
     }
+    
     return null;
   };
 
   const absoluteDate = task.deadline 
-    ? new Date(task.deadline).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) 
+    ? new Date(task.deadline).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) 
     : null;
 
   const categoryColorClass = getCategoryColor(task.category);
@@ -89,60 +112,105 @@ const TaskCard = ({ task, index, onClick, onDelete }) => {
     </div>
   ) : null;
 
-  return (
-    <Draggable draggableId={task.id.toString()} index={index}>
-      {(provided, snapshot) => (
-        <div
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          onClick={() => onClick(task)}
-          className={cn(
-            "group relative mb-3 p-3 rounded-lg border border-transparent dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm hover:border-zinc-300 dark:hover:border-zinc-700 transition-all cursor-grab active:cursor-grabbing",
-            snapshot.isDragging ? "shadow-lg ring-2 ring-blue-500/50 rotate-2 z-50" : ""
-          )}
-          style={provided.draggableProps.style}
-        >
-          <div className="flex justify-between items-start gap-2 mb-1">
-             <h4 className={cn("text-base font-medium text-zinc-800 dark:text-zinc-200 leading-tight", task.status === 'done' && 'line-through text-zinc-400')}>{task.title}</h4>
-             <button 
-                onClick={(e) => { e.stopPropagation(); onDelete(task.id); }} 
-                className="opacity-0 group-hover:opacity-100 p-1 text-zinc-400 hover:text-red-500 transition-opacity"
-             >
-               <Trash2 size={14} />
-             </button>
-          </div>
-
-          {task.description && (
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-2 line-clamp-2 py-0.5 leading-relaxed">{task.description}</p>
-          )}
-          
-          <div className="border-t border-zinc-100 dark:border-zinc-800 my-2"></div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex flex-wrap items-center gap-1.5">
-                {task.status !== 'done' && (
-                    <span className={cn("text-[10px] px-1.5 py-0.5 rounded border", PRIORITY_STYLES[task.priority])}>
-                    {task.priority}
-                    </span>
-                )}
-                {getRelativeBadge(task.deadline, task.status)}
-                {subtaskProgress}
-                {task.status !== 'done' && task.category && (
-                    <span className={cn("text-[10px] px-1.5 py-0.5 rounded border", categoryColorClass)}>
-                        {task.category}
-                    </span>
-                )}
+      return (
+        <Draggable draggableId={task.id.toString()} index={index} isDragDisabled={isMobile}>
+          {(provided, snapshot) => (
+            <div
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              onClick={() => onClick(task)}
+              className={cn(
+                "group relative mb-3 p-3 rounded-lg border border-transparent dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm hover:border-zinc-300 dark:hover:border-zinc-700 transition-all cursor-grab",
+                snapshot.isDragging ? "shadow-lg ring-2 ring-blue-500/50 rotate-2 z-50 cursor-grabbing" : "",
+                isMobile ? "cursor-default" : ""
+              )}
+              style={provided.draggableProps.style}
+            >
+              {/* MAIN CONTENT ROW */}
+              <div className="flex justify-between items-start gap-4 mb-2">
+                              {/* LEFT: Title & Description */}
+                              <div className="flex-1 min-w-0">
+                                 <h4 className={cn("text-sm md:text-base font-medium text-zinc-800 dark:text-zinc-200 leading-tight break-words mb-1", task.status === 'done' && 'line-through text-zinc-400')}>{task.title}</h4>
+                                 {task.description && (
+                                     <p className="text-[11px] md:text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2 leading-relaxed">{task.description}</p>
+                                 )}
+                              </div>    
+                 {/* RIGHT: Date & Actions Stack */}
+                 <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                     {/* Top Right: Date */}
+                     {absoluteDate ? (
+                        <div className="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-800/50 px-1.5 py-0.5 rounded border border-zinc-100 dark:border-zinc-800 text-[10px] text-zinc-400 dark:text-zinc-500 font-medium">
+                            <Calendar size={10} />
+                            <span className="whitespace-nowrap">{absoluteDate}</span>
+                        </div>
+                     ) : <div className="h-5" />} {/* Spacer if no date */}
+    
+                     {/* Bottom Right (Below Date): Actions */}
+                     <div className="flex items-center gap-1">
+                        <button 
+                            onClick={(e) => { e.stopPropagation(); onClick(task); }} 
+                            className="p-1.5 text-zinc-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-colors"
+                            title="Buka Detail"
+                        >
+                           <Maximize2 size={14} />
+                        </button>
+                        <button 
+                            onClick={(e) => { e.stopPropagation(); onDelete(task.id); }} 
+                            className="p-1.5 text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
+                            title="Hapus"
+                        >
+                           <Trash2 size={14} />
+                        </button>
+                    </div>
+                 </div>
+              </div>
+    
+              <div className="border-t border-zinc-100 dark:border-zinc-800 my-2"></div>
+    
+              {/* FOOTER ROW: Badges Only */}
+              <div className="flex flex-wrap items-center gap-2">
+                    {task.status !== 'done' && (
+                        <span className={cn("text-[10px] px-1.5 py-0.5 rounded border flex-shrink-0", PRIORITY_STYLES[task.priority])}>
+                        {task.priority}
+                        </span>
+                    )}
+                    {getRelativeBadge(task.deadline, task.status)}
+                    {subtaskProgress}
+                    {task.status !== 'done' && task.category && (
+                        <span className={cn("text-[10px] px-1.5 py-0.5 rounded border flex-shrink-0", categoryColorClass)}>
+                            {task.category}
+                        </span>
+                    )}
+              </div>
             </div>
-            
-            {task.status !== 'done' && absoluteDate && (
-                <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-medium">{absoluteDate}</span>
-            )}
-          </div>
-        </div>
-      )}
-    </Draggable>
-  );
+          )}
+        </Draggable>
+      );
+    };// Helpers for split date/time inputs
+const getDatePart = (dateString) => {
+    if (!dateString) return '';
+    const d = new Date(dateString);
+    return isNaN(d.getTime()) ? '' : d.toISOString().split('T')[0];
+};
+
+const getTimePart = (dateString) => {
+    if (!dateString) return '';
+    const d = new Date(dateString);
+    if (isNaN(d.getTime())) return '';
+    return d.toTimeString().slice(0, 5); // Returns HH:mm
+};
+
+const handleSplitDateTimeChange = (id, currentDeadline, part, value, handleUpdate) => {
+    let datePart = getDatePart(currentDeadline) || new Date().toISOString().split('T')[0];
+    let timePart = getTimePart(currentDeadline) || "00:00";
+
+    if (part === 'date') datePart = value;
+    if (part === 'time') timePart = value;
+
+    if (datePart) {
+        handleUpdate(id, { deadline: `${datePart}T${timePart}` });
+    }
 };
 
 // --- MAIN VIEW COMPONENT ---
@@ -154,6 +222,14 @@ const TodoView = () => {
   const [selectedTodo, setSelectedTodo] = useState(null);
   const [activeTab, setActiveTab] = useState('detail');
   const [newSubtaskInput, setNewSubtaskInput] = useState('');
+  const [mobileActiveColumn, setMobileActiveColumn] = useState('upcoming');
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const confirm = useConfirm();
 
@@ -336,20 +412,50 @@ const TodoView = () => {
   if (loading) return <div className="flex h-full items-center justify-center"><Loader2 className="animate-spin text-zinc-500" /></div>;
 
   return (
-    <div className="h-full flex flex-col bg-transparent p-6 overflow-hidden">
-      <div className="flex items-center justify-between mb-6">
+    <div className="h-full flex flex-col bg-transparent p-3 md:p-6 overflow-hidden">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-3 md:mb-6 gap-3">
         <div>
-          <h1 className="text-3xl font-bold text-zinc-800 dark:text-zinc-100 mb-1">LIST TUGAS</h1>
-          <p className="text-zinc-500 dark:text-zinc-400 text-sm">Kelola proyek dan tugas kuliahmu.</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-zinc-800 dark:text-zinc-100 mb-0.5">LIST TUGAS</h1>
+          <p className="text-zinc-500 dark:text-zinc-400 text-xs md:text-sm">Kelola proyek dan tugas kuliahmu.</p>
         </div>
-        {/* Global Action Button Only */}
-        <button onClick={() => setIsAdding(true)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors shadow-sm"><Plus size={16} /> Baru</button>
+        
+        {/* Mobile/Tablet Column Switcher */}
+        <div className="flex p-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg lg:hidden">
+            {Object.values(COLUMNS).map(col => (
+                <button
+                    key={col.id}
+                    onClick={() => setMobileActiveColumn(col.id)}
+                    className={cn(
+                        "flex-1 py-1 text-[10px] font-medium rounded-md transition-all",
+                        mobileActiveColumn === col.id 
+                            ? "bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 shadow-sm" 
+                            : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300"
+                    )}
+                >
+                    {col.title}
+                </button>
+            ))}
+        </div>
+
+        {/* Global Action Button */}
+        <button onClick={() => setIsAdding(true)} className="hidden lg:flex bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium items-center gap-2 transition-colors shadow-sm"><Plus size={16} /> Baru</button>
+        
+        {/* Mobile/Tablet Button */}
+         <button onClick={() => setIsAdding(true)} className="lg:hidden w-full bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center justify-center gap-2 transition-colors shadow-sm"><Plus size={14} /> Tambah Tugas</button>
       </div>
 
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className="flex gap-6 h-full overflow-x-auto pb-4 scrollbar-hide">
+        <div className="flex lg:gap-6 h-full overflow-hidden pb-4">
           {Object.values(COLUMNS).map((column) => (
-            <div key={column.id} className="flex-1 min-w-[300px] flex flex-col h-full">
+            <div 
+                key={column.id} 
+                className={cn(
+                    "flex-1 flex-col h-full min-w-0",
+                    mobileActiveColumn === column.id ? "flex" : "hidden lg:flex",
+                    // Apply max-width constraint for better tablet aesthetic in single-column mode
+                    mobileActiveColumn === column.id && "max-w-2xl mx-auto w-full"
+                )}
+            >
               {/* COLUMN HEADER WITH SORT */}
               <div className="flex items-center justify-between mb-4 px-1">
                 <div className="flex items-center gap-2">
@@ -402,7 +508,7 @@ const TodoView = () => {
                       </div>
                     )}
                     {getTasksByStatus(column.id).map((task, index) => (
-                      <TaskCard key={task.id} task={task} index={index} onClick={handleOpenTodo} onDelete={async (id) => { 
+                      <TaskCard key={task.id} task={task} index={index} onClick={handleOpenTodo} isMobile={isMobile} onDelete={async (id) => { 
                         if(await confirm({
                             title: 'Hapus Tugas?',
                             message: 'Tindakan ini akan menghapus tugas secara permanen.',
@@ -428,7 +534,7 @@ const TodoView = () => {
           <div className="flex flex-col h-full bg-transparent">
             <input className="text-3xl font-bold bg-transparent border-none focus:outline-none w-full text-zinc-800 dark:text-zinc-100 placeholder:text-zinc-400 mb-4 py-2 leading-tight" value={selectedTodo.title} onChange={(e) => handleUpdate(selectedTodo.id, { title: e.target.value })} placeholder="Nama Tugas..." />
             
-            <div className="grid grid-cols-2 gap-4 mb-6 p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-zinc-200 dark:border-zinc-800">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-zinc-200 dark:border-zinc-800">
                 <div className="flex flex-col gap-1">
                     <label className="text-xs font-semibold text-zinc-500 uppercase">Prioritas</label>
                     <div className="flex gap-2">
@@ -445,7 +551,20 @@ const TodoView = () => {
                 </div>
                 <div className="flex flex-col gap-1">
                     <label className="text-xs font-semibold text-zinc-500 uppercase">Deadline</label>
-                    <input type="datetime-local" value={selectedTodo.deadline || ''} onChange={(e) => handleUpdate(selectedTodo.id, { deadline: e.target.value })} className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-sm rounded px-2 py-1 text-zinc-700 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-blue-500 w-full" />
+                    <div className="flex gap-2">
+                        <input 
+                            type="date" 
+                            value={getDatePart(selectedTodo.deadline)} 
+                            onChange={(e) => handleSplitDateTimeChange(selectedTodo.id, selectedTodo.deadline, 'date', e.target.value, handleUpdate)} 
+                            className="flex-1 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-sm rounded px-2 py-1 text-zinc-700 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-blue-500" 
+                        />
+                        <input 
+                            type="time" 
+                            value={getTimePart(selectedTodo.deadline)} 
+                            onChange={(e) => handleSplitDateTimeChange(selectedTodo.id, selectedTodo.deadline, 'time', e.target.value, handleUpdate)} 
+                            className="w-[100px] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-sm rounded px-2 py-1 text-zinc-700 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-blue-500" 
+                        />
+                    </div>
                 </div>
                 
                 {/* --- CUSTOM CATEGORY DROPDOWN --- */}
@@ -512,7 +631,7 @@ const TodoView = () => {
               {/* Tab Content */}
               <div className="flex-1 overflow-hidden">
                 {activeTab === 'detail' && (
-                  <div className="flex-1 -m-4 overflow-hidden h-full">
+                  <div className="flex-1 overflow-hidden h-full border border-zinc-200 dark:border-zinc-800 rounded-md">
                       <MarkdownEditor content={selectedTodo.note} onUpdate={(content) => handleUpdate(selectedTodo.id, { note: content })} />
                   </div>
                 )}

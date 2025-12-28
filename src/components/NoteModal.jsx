@@ -43,11 +43,19 @@ const NoteModal = ({ isOpen, onClose, children }) => {
       {/* Modal Content - Right Floating Window */}
       <div
         ref={modalRef}
-        className={`relative w-1/2 max-w-4xl h-full bg-zinc-100 dark:bg-zinc-900 shadow-2xl transform transition-transform duration-300 ease-in-out ${
+        className={`relative w-full md:w-1/2 max-w-4xl h-full bg-zinc-100 dark:bg-zinc-900 shadow-2xl transform transition-transform duration-300 ease-in-out ${
           show ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <div className="p-8 flex flex-col h-full">
+        {/* Mobile Close Button */}
+        <button 
+            onClick={onClose}
+            className="md:hidden absolute top-4 right-4 z-50 p-2 bg-white dark:bg-zinc-800 rounded-full shadow-md text-zinc-500 hover:text-red-500"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+
+        <div className="p-4 md:p-8 flex flex-col h-full">
           {children}
         </div>
       </div>

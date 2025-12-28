@@ -1,8 +1,8 @@
-// Generate consistent SUBTLE colors for badges (Sync with Priority style)
+// Generate consistent SUBTLE colors for badges
 export const getCategoryColor = (category) => {
     if (!category) return 'bg-zinc-100 text-zinc-500 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700';
   
-    // Palet warna yang jauh lebih HALUS (Subtle/Ghost)
+    // Palet warna yang jauh lebih halus
     // Style: Text color kuat, Background sangat tipis/transparan, Border tipis.
     const palettes = [
       'text-red-600 bg-red-50 border-red-100 dark:text-red-400 dark:bg-red-900/10 dark:border-red-900/30',

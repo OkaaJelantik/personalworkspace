@@ -76,7 +76,7 @@ const MarkdownEditor = ({ content, onUpdate }) => {
     },
     editorProps: {
       attributes: {
-        class: 'prose dark:prose-invert max-w-none focus:outline-none flex-grow',
+        class: 'prose prose-sm md:prose-base dark:prose-invert max-w-none focus:outline-none flex-grow',
         'data-placeholder': 'Ketikan catatan disini...',
       },
     },
@@ -86,7 +86,7 @@ const MarkdownEditor = ({ content, onUpdate }) => {
     // The entire editor component is transparent
     <div className="flex flex-col flex-grow h-full bg-transparent">
       <MenuBar editor={editor} />
-      <div className="flex-grow overflow-y-auto">
+      <div className="flex-grow overflow-y-auto px-1 pb-10">
         <EditorContent editor={editor} />
       </div>
     </div>

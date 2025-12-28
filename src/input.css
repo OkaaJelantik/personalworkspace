@@ -1,10 +1,5 @@
 @import "tailwindcss";
 
-/* 
-  FORCE DARK MODE CLASS STRATEGY (Tailwind v4) 
-  Ini memberitahu Tailwind untuk menerapkan style 'dark:' 
-  HANYA jika elemen induk memiliki class '.dark'.
-*/
 @custom-variant dark (&:where(.dark, .dark *));
 
 .ProseMirror {
@@ -21,11 +16,6 @@
   height: 0;
 }
 
-/* 
-  Karena kita menimpa varian 'dark', kita harus manual menangani media query 
-  jika kita ingin placeholder berubah warna, ATAU cukup gunakan class .dark parent.
-  Di bawah ini saya ubah menjadi selector .dark agar konsisten.
-*/
 :where(.dark) .ProseMirror.is-empty:first-of-type::before {
   color: #52525b; /* zinc-600 */
 }
@@ -39,7 +29,6 @@
   outline: none;
 }
 
-/* Utilitas untuk menyembunyikan scrollbar namun tetap bisa discroll */
 .scrollbar-hide {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
