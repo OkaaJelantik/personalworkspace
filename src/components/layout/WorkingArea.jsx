@@ -85,12 +85,19 @@ const NoteView = ({ note, onUpdateNote }) => {
 }
 
 const WelcomeView = ({ tab }) => (
-    <div className="flex flex-col items-center justify-center h-full p-6 text-center select-none opacity-50">
-        <div className="w-16 h-16 bg-zinc-200 dark:bg-zinc-800 rounded-2xl flex items-center justify-center mb-4">
-            <div className="w-8 h-8 border-2 border-zinc-400 dark:border-zinc-500 rounded-lg"></div>
+    <div className="flex flex-col items-center justify-center h-full p-6 text-center select-none">
+        <p className="text-[#6b7280] dark:text-zinc-400 text-3xl font-medium italic z-10 -ml-12 opacity-90">
+            "Lebih baik terlihat cupu daripada menjadi cepu."
+        </p>
+        <div className="w-[600px] h-[550px] -mt-12 flex items-center justify-center">
+            <img 
+                src="/maskot.svg" 
+                alt="Mascot" 
+                className="w-full h-full object-contain opacity-90 dark:brightness-[1.8] dark:grayscale" 
+            />
         </div>
-        <p className="text-zinc-400 dark:text-zinc-600 text-sm font-medium">
-            Personal Workspace
+        <p className="text-zinc-400 dark:text-zinc-400 text-xl -ml-12 font-light">
+            — Veda Hanastaa, [Kenzo 2.0].
         </p>
     </div>
 );
