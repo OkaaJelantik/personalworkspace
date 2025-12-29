@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, Search, X, Folder, ChevronRight, ChevronDown, FolderPlus } from 'lucide-react';
+import { Plus, Trash2, Search, X, Folder, ChevronRight, ChevronDown, FolderPlus, Pencil } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -8,12 +8,14 @@ function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
-const MainSidebar = ({ isVisible, notes, folders, onAddNewNote, onDeleteNote, onSelectNote, onAddFolder, onDeleteFolder, onUpdateNote }) => {
+const MainSidebar = ({ isVisible, notes, folders, onAddNewNote, onDeleteNote, onSelectNote, onAddFolder, onDeleteFolder, onUpdateNote, onUpdateFolder }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedFolders, setExpandedFolders] = useState({}); // Current UI state
   const [manualExpandedFolders, setManualExpandedFolders] = useState({}); // Backup of user's manual toggles
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
+  const [editingFolderId, setEditingFolderId] = useState(null);
+  const [editingFolderName, setEditingFolderName] = useState('');
 
   // Auto-expand folders on search & Restore on clear
   useEffect(() => {
@@ -62,6 +64,14 @@ const MainSidebar = ({ isVisible, notes, folders, onAddNewNote, onDeleteNote, on
       setNewFolderName('');
       setIsCreatingFolder(false);
     }
+  };
+
+  const handleRenameFolder = (folderId) => {
+    if (editingFolderName.trim()) {
+      onUpdateFolder(folderId, { name: editingFolderName.trim() });
+    }
+    setEditingFolderId(null);
+    setEditingFolderName('');
   };
 
   const onDragEnd = (result) => {
@@ -200,12 +210,42 @@ const MainSidebar = ({ isVisible, notes, folders, onAddNewNote, onDeleteNote, on
                                 className="group flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-800 cursor-pointer transition-colors"
                                 onClick={() => toggleFolder(folder.id)}
                             >
-                                <div className="flex items-center gap-2 overflow-hidden">
+                                <div className="flex items-center gap-2 overflow-hidden flex-1">
                                     {expandedFolders[folder.id] ? <ChevronDown size={14} className="text-zinc-400" /> : <ChevronRight size={14} className="text-zinc-400" />}
-                                    <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300 truncate">{folder.name}</span>
-                                    <span className="text-xs text-zinc-400">({groupedNotes[folder.id]?.length || 0})</span>
+                                    
+                                    {editingFolderId === folder.id ? (
+                                      <input 
+                                        autoFocus
+                                        type="text"
+                                        value={editingFolderName}
+                                        onChange={(e) => setEditingFolderName(e.target.value)}
+                                        onClick={(e) => e.stopPropagation()}
+                                        onKeyDown={(e) => {
+                                          if (e.key === 'Enter') handleRenameFolder(folder.id);
+                                          if (e.key === 'Escape') setEditingFolderId(null);
+                                        }}
+                                        onBlur={() => handleRenameFolder(folder.id)}
+                                        className="bg-white dark:bg-zinc-900 border border-blue-500 rounded px-1 w-full text-sm focus:outline-none"
+                                      />
+                                    ) : (
+                                      <>
+                                        <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300 truncate">{folder.name}</span>
+                                        <span className="text-xs text-zinc-400">({groupedNotes[folder.id]?.length || 0})</span>
+                                      </>
+                                    )}
                                 </div>
-                                <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity ml-2">
+                                    <button 
+                                        onClick={(e) => { 
+                                          e.stopPropagation(); 
+                                          setEditingFolderId(folder.id); 
+                                          setEditingFolderName(folder.name); 
+                                        }}
+                                        className="p-1 hover:text-blue-600 text-zinc-400"
+                                        title="Ubah Nama Folder"
+                                    >
+                                        <Pencil size={14} />
+                                    </button>
                                     <button 
                                         onClick={(e) => { e.stopPropagation(); onAddNewNote(folder.id); setExpandedFolders(p => ({...p, [folder.id]: true})); }}
                                         className="p-1 hover:text-blue-600 text-zinc-400"

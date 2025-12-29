@@ -151,6 +151,15 @@ Aplikasi ini dibangun menggunakan arsitektur berbasis komponen dengan React. Str
 3.  **WorkingArea (Area Kerja):** Konten utama aplikasi yang menggunakan sistem *tab-based*. Setiap fitur atau catatan yang dibuka akan muncul sebagai tab baru.
 4.  **State Management:** State global (seperti daftar tab, catatan, dan status sidebar) dikelola di komponen `App.jsx` dan didistribusikan ke komponen anak melalui *props*.
 
+#### 3.2.1 Design System & Visual Language
+Sebelum implementasi, sistem desain telah ditentukan untuk menjaga konsistensi visual:
+*   **Color Palette (Zinc-Based):** Memilih skala *Zinc* (abu-abu netral) untuk mengurangi kelelahan mata (*eye strain*).
+*   **Accent System:** Penggunaan warna pastel (Sky, Emerald, Rose) dengan opasitas rendah untuk *badge* kategori agar tidak mengganggu fokus utama.
+*   **Typography:** Menggunakan font Sans-Serif modern dengan sistem skala *Base* (16px) untuk keterbacaan optimal.
+
+#### 3.2.2 Narasi UI/UX (Focus-Oriented Minimalist)
+Desain ini mengusung filosofi **"Focus-Oriented Minimalist"**. Tujuannya adalah menghilangkan "Noise" visual. Penggunaan **Three-Pane Layout** memastikan hierarki informasi yang jelas dari kiri (navigasi global) ke kanan (area kerja spesifik). Sistem **Tabbed Interface** dipilih untuk mendukung *multitasking* tanpa pengguna kehilangan konteks atau progres pekerjaan.
+
 ### 3.3 Hasil dan Pembahasan Implementasi
 
 #### 3.3.1. Modul To-do List: Kanban Board

@@ -4,7 +4,7 @@ import MainSidebar from './components/layout/MainSidebar';
 import WorkingArea from './components/layout/WorkingArea';
 import Header from './components/layout/Header';
 import Toolbar from './components/layout/Toolbar';
-import { getNotes, addNote, updateNote, deleteNote, getFolders, addFolder, deleteFolder } from './services/db';
+import { getNotes, addNote, updateNote, deleteNote, getFolders, addFolder, deleteFolder, updateFolder } from './services/db';
 import { useTheme } from './hooks/useTheme';
 import { useConfirm } from './contexts/DialogContext';
 
@@ -85,6 +85,15 @@ function App() {
   const handleAddFolder = async (name) => {
     const newFolder = await addFolder({ name });
     setFolders([...folders, newFolder]);
+  };
+
+  const handleUpdateFolder = async (id, folderData) => {
+    const folderToUpdate = folders.find(f => f.id === id);
+    if (!folderToUpdate) return;
+    
+    const updatedFolder = { ...folderToUpdate, ...folderData };
+    await updateFolder(updatedFolder);
+    setFolders(folders.map(f => f.id === id ? updatedFolder : f));
   };
 
   const handleDeleteFolder = async (folderId) => {
@@ -220,6 +229,7 @@ function App() {
                   }}
                   onAddFolder={handleAddFolder}
                   onDeleteFolder={handleDeleteFolder}
+                  onUpdateFolder={handleUpdateFolder}
                   onUpdateNote={handleUpdateNote}
                 />
             </div>

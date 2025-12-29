@@ -132,6 +132,17 @@ async function deleteFolder(id) {
     });
 }
 
+async function updateFolder(folder) {
+    if (!db) db = await openDatabase();
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(FOLDER_STORE_NAME, 'readwrite');
+        const store = transaction.objectStore(FOLDER_STORE_NAME);
+        const request = store.put(folder);
+        request.onsuccess = () => resolve(folder);
+        request.onerror = () => reject(request.error);
+    });
+}
+
 // --- Note Functions ---
 async function getNotes() {
     if (!db) db = await openDatabase();
@@ -195,5 +206,5 @@ export {
     openDatabase, 
     getTodos, addTodo, updateTodo, deleteTodo,
     getNotes, addNote, updateNote, deleteNote,
-    getFolders, addFolder, deleteFolder // Export new functions
+    getFolders, addFolder, deleteFolder, updateFolder // Export new functions
 };

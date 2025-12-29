@@ -38,12 +38,14 @@ Aplikasi ini dirancang dengan prinsip Local-First, yang berarti data pengguna ad
 3. **Kapasitas Besar & Asinkron**: Berbeda dengan LocalStorage yang kapasitasnya sangat terbatas (5MB) dan lambat, IndexedDB adalah database NoSQL murni di browser yang mampu menyimpan data hingga hitungan Gigabyte dan bekerja secara asinkron. Ini memastikan aplikasi tetap lancar meskipun menyimpan ribuan catatan.
 4. **Performa Maksimal (Zero Latency)**: Semua interaksi terasa instan karena aplikasi tidak perlu menunggu respon dari server jauh. Proses baca dan tulis data terjadi langsung di memori browser pengguna.
 
-# Bagaimana alur kerja (workflow) pengembangan aplikasi ini dari awal?
+# Bagaimana proses perancangan UI/UX aplikasi ini?
 -------------
-Alur pengembangan aplikasi ini dikelola secara sistematis menggunakan ekosistem Node.js dan NPM:
+Proses perancangan dilakukan dengan pendekatan "Design System First":
+1.  **Wireframing:** Menentukan struktur Three-Pane Layout untuk memastikan alur kerja yang logis.
+2.  **Visual Design di Figma:** Membuat komponen atom (button, card, input) dan menentukan Design Tokens (warna Zinc dan tipografi Sans-Serif).
+3.  **Prototyping:** Menguji alur perpindahan tab dan interaksi Kanban untuk memastikan tidak ada hambatan visual (Zero-Noise).
+4.  **Reverse Engineering to Code:** Mengimplementasikan token desain tersebut secara presisi menggunakan utility classes di Tailwind CSS 4.
 
-1. **Inisialisasi Project**: Kami memulai dengan menggunakan Vite untuk mem-scaffold struktur project React. Perintah 'npm install' digunakan untuk mengunduh seluruh library pendukung yang tercatat di file package.json.
-2. **Manajemen Dependensi**: NPM (Node Package Manager) bertindak sebagai pusat kendali alat. Kami menggunakannya untuk menambah fitur secara modular, misalnya menginstal 'lucide-react' untuk ikon atau 'tiptap' untuk editor, serta memastikan semua library tersebut berada pada versi yang stabil dan kompatibel.
-3. **Konfigurasi Custom (Alias & Scripts)**: Untuk memudahkan pengembangan, kami mengatur alias path (seperti '@components') agar struktur kodingan lebih rapi dan mudah diimpor. Kami juga membuat script alias di NPM, seperti 'npm run dev' untuk menjalankan server pengembangan dan 'npm run deploy' sebagai perintah singkat untuk langsung mempublikasikan update ke Vercel Production.
-4. **Proses Pengembangan & Build**: Selama koding, Vite menyediakan fitur hot-reload yang memperbarui tampilan secara instan. Setelah fitur selesai, kami menjalankan 'npm run build' untuk mengompres kode menjadi file statis yang sangat ringan (minified) dan optimal untuk dibaca oleh browser pengguna.
-5. **Deployment**: Tahap akhir adalah mengirimkan hasil build tersebut ke platform hosting (Vercel). Seluruh alur ini memastikan proses dari baris kode hingga menjadi produk jadi berjalan secara otomatis, cepat, dan terorganisir.
+# Mengapa desainnya terlihat sangat mirip dengan aplikasi modern seperti Notion atau Obsidian?
+-------------
+Hal ini disengaja untuk menjaga **Affordance** (kemudahan penggunaan karena familiaritas). Dengan mengadopsi pola desain yang sudah dikenal pengguna (seperti sidebar di kiri dan tab di atas), aplikasi ini tidak memerlukan kurva pembelajaran yang tinggi. Pengguna bisa langsung produktif tanpa perlu mempelajari antarmuka baru yang asing.
