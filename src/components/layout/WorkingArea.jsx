@@ -91,7 +91,7 @@ const WelcomeView = ({ tab }) => (
     </p>
     <div className="max-w-xs w-full aspect-square -mt-8 flex items-center justify-center">
       <img
-        src="/maskot.svg"
+        src="maskot.svg"
         alt="Mascot"
         className="w-full h-full object-contain opacity-90 dark:brightness-[1.8] dark:grayscale"
       />
