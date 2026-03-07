@@ -1,7 +1,7 @@
 # Personal Workspace
 Created for academic project purposes.
 
-Developed by: vedahanasta, OkaaJelantik, PandeJanuartha. 
+Developed by: [Veda Hanasta](https://github.com/vedahanasta), [Oka Jelantik](https://github.com/OkaaJelantik), [Pande Januartha](https://github.com/PandeJanuartha). 
 
 A modern, privacy-focused, **Local-first** personal productivity dashboard. Built with React and powered by IndexedDB, this application keeps all your data strictly on your device—no cloud, no tracking, just your workflow.
 
@@ -57,6 +57,7 @@ This application utilizes **IndexedDB**, a low-level API for client-side storage
 ---
 
 *Made for personal use and academic project.*
+
 
 
 
